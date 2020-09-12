@@ -41,6 +41,14 @@ Toggle the list by pressing `` ` `` (backtick, right below Escape button). Setti
 - Little white squares on thumbnails indicate the number of replies the post has.
 - Pressing `s` at the bottom of the list scrolls to the bottom of the page to clear unread posts indicator.
 
+### Catalog
+- Media navigation style from list is also applied to catalog.
+- `wasd` to navigate threads.
+- `f` to open in current tab.
+- `F` to open in background tab.
+- `Ctrl+F` to open in new tab and switch to it.
+- `` ` `` to open settings panel.
+
 ### Currently supported sites
 - 4chan
 - thebarchive
