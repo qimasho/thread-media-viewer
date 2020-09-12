@@ -1,0 +1,157 @@
+import {createContext, useState, useContext, useEffect} from 'lib/preact';
+import {SyncedStorage} from 'lib/syncedStorage';
+
+export type Settings = {
+	mediaListWidth: number;
+	mediaListHeight: number;
+	mediaListItemsPerRow: number;
+
+	// Video player
+	volume: number, // 0-1
+	fastForwardActivation: 'hold' | 'toggle',
+	fastForwardRate: number,
+	adjustVolumeBy: number, // 0-1
+	seekBy: number, // seconds
+	endTimeFormat: 'total' | 'remaining',
+
+	// Full page mode
+	fpmActivation: 'hold' | 'toggle',
+	fpmVideoUpscaleThreshold: number,
+	fpmVideoUpscaleLimit: number,
+	fpmImageUpscaleThreshold: number,
+	fpmImageUpscaleLimit: number,
+
+	// Catalog navigator
+	catalogNavigator: boolean,
+
+	// Global navigation shortcuts (catalog & media list)
+	keyToggleUI: string | null,
+	keyNavLeft: string | null,
+	keyNavRight: string | null,
+	keyNavUp: string | null,
+	keyNavDown: string | null,
+	keyNavPageBack: string | null,
+	keyNavPageForward: string | null,
+	keyNavStart: string | null,
+	keyNavEnd: string | null,
+
+	// Media list shortcuts
+	keyListViewToggle: string | null,
+	keyListViewLeft: string | null,
+	keyListViewRight: string | null,
+	keyListViewUp: string | null,
+	keyListViewDown: string | null,
+
+	// Media view shortcuts
+	keyViewClose: string | null,
+	keyViewFullPage: string | null,
+	keyViewFullScreen: string | null,
+	keyViewPause: string | null,
+	keyViewFastForward: string | null,
+	keyViewVolumeDown: string | null,
+	keyViewVolumeUp: string | null,
+	keyViewSeekBack: string | null,
+	keyViewSeekForward: string | null,
+	keyViewSeekTo0: string | null,
+	keyViewSeekTo10: string | null,
+	keyViewSeekTo20: string | null,
+	keyViewSeekTo30: string | null,
+	keyViewSeekTo40: string | null,
+	keyViewSeekTo50: string | null,
+	keyViewSeekTo60: string | null,
+	keyViewSeekTo70: string | null,
+	keyViewSeekTo80: string | null,
+	keyViewSeekTo90: string | null,
+
+	// Catalog shortcuts
+	keyCatalogOpenThread: string;
+	keyCatalogOpenThreadInNewTab: string;
+	keyCatalogOpenThreadInBackgroundTab: string;
+}
+
+export const defaultSettings: Settings = {
+	mediaListWidth: 640,
+	mediaListHeight: 0.5,
+	mediaListItemsPerRow: 3,
+
+	// Video Player
+	volume: 0.5,
+	fastForwardActivation: 'hold',
+	fastForwardRate: 5,
+	adjustVolumeBy: 0.125,
+	seekBy: 5,
+	endTimeFormat: 'total',
+
+	// Full page mode
+	fpmActivation: 'hold',
+	fpmVideoUpscaleThreshold: 0.5,
+	fpmVideoUpscaleLimit: 2,
+	fpmImageUpscaleThreshold: 0,
+	fpmImageUpscaleLimit: 2,
+
+	// Catalog navigator
+	catalogNavigator: true,
+
+	// Global navigation shortcuts (catalog & media list)
+	keyToggleUI: '`',
+	keyNavLeft: 'a',
+	keyNavRight: 'd',
+	keyNavUp: 'w',
+	keyNavDown: 's',
+	keyNavPageBack: 'PageUp',
+	keyNavPageForward: 'PageDown',
+	keyNavStart: 'Home',
+	keyNavEnd: 'End',
+
+	// Media list shortcuts
+	keyListViewToggle: 'f',
+	keyListViewLeft: 'A',
+	keyListViewRight: 'D',
+	keyListViewUp: 'W',
+	keyListViewDown: 'S',
+
+	// Media view shortcuts
+	keyViewClose: 'F',
+	keyViewFullPage: 'Tab',
+	keyViewFullScreen: 'r',
+	keyViewPause: 'Space',
+	keyViewFastForward: 'Shift+Space',
+	keyViewVolumeDown: 'Q',
+	keyViewVolumeUp: 'E',
+	keyViewSeekBack: 'q',
+	keyViewSeekForward: 'e',
+	keyViewSeekTo0: '0',
+	keyViewSeekTo10: '1',
+	keyViewSeekTo20: '2',
+	keyViewSeekTo30: '3',
+	keyViewSeekTo40: '4',
+	keyViewSeekTo50: '5',
+	keyViewSeekTo60: '6',
+	keyViewSeekTo70: '7',
+	keyViewSeekTo80: '8',
+	keyViewSeekTo90: '9',
+
+	// Catalog shortcuts
+	keyCatalogOpenThread: 'f',
+	keyCatalogOpenThreadInNewTab: 'Ctrl+F',
+	keyCatalogOpenThreadInBackgroundTab: 'F'
+};
+
+const SettingsContext = createContext<SyncedStorage<Settings> | null>(null);
+
+/**
+ * Updates settings when they change
+ */
+export function useSettings(): SyncedStorage<Settings> {
+	const syncedSettings = useContext(SettingsContext);
+	if (!syncedSettings) throw new Error();
+	const [_, update] = useState(NaN);
+
+	useEffect(() => {
+		return syncedSettings._subscribe(() => update(NaN));
+	}, []);
+
+	return syncedSettings;
+}
+
+export const SettingsProvider = SettingsContext.Provider;

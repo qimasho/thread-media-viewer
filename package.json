@@ -1,0 +1,18 @@
+{
+  "name": "thread-media-viewer",
+  "version": "0.0.0",
+  "description": "Development dependencies.",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "clipboardy": "^2.3.0",
+    "esbuild": "^0.6.31",
+    "gulp": "^4.0.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "gulp build"
+  },
+  "author": "",
+  "license": "ISC"
+}

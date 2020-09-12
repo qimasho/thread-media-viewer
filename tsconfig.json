@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"baseUrl": "src",
+		"paths": {"*": ["*"]},
+		"newLine": "LF",
+		"strict": true,
+		"target": "ES2019",
+		"sourceMap": false
+	},
+	"include": ["src/**/*.ts"],
+	"exclude": ["node_modules"]
+}

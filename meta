@@ -1,0 +1,16 @@
+// ==UserScript==
+// @name        Thread Media Viewer
+// @description Comfy media browser and viewer for various discussion boards.
+// @version     2.0.0
+// @namespace   qimasho
+// @source      https://github.com/qimasho/thread-media-viewer
+// @supportURL  https://github.com/qimasho/thread-media-viewer/issues
+// @match       https://boards.4chan.org/*
+// @match       https://boards.4channel.org/*
+// @match       https://thebarchive.com/*
+// @require     https://cdn.jsdelivr.net/npm/preact@10.4.6/dist/preact.min.js
+// @require     https://cdn.jsdelivr.net/npm/preact@10.4.6/hooks/dist/hooks.umd.js
+// @grant       GM_addStyle
+// @grant       GM_openInTab
+// @license     MIT
+// ==/UserScript==
