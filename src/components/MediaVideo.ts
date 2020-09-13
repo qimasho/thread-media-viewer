@@ -71,7 +71,7 @@ export function MediaVideo({
 			const videoAspectRatio = naturalWidth / naturalHeight;
 			let newHeight, newWidth;
 			if (windowAspectRatio > videoAspectRatio) {
-				newHeight = min(naturalHeight * upscaleLimit, containerHeight );
+				newHeight = min(naturalHeight * upscaleLimit, containerHeight);
 				newWidth = round(naturalWidth * (newHeight / naturalHeight));
 			} else {
 				newWidth = min(naturalWidth * upscaleLimit, containerWidth);
@@ -106,13 +106,13 @@ export function MediaVideo({
 		window.addEventListener('mouseup', unbind);
 
 		pointerTimelineSeek(event);
-	};
+	}
 
 	function handleContainerWheel(event: WheelEvent) {
 		event.preventDefault();
 		event.stopPropagation();
 		settings.volume = min(max(settings.volume + settings.adjustVolumeBy * (event.deltaY > 0 ? -1 : 1), 0), 1);
-	};
+	}
 
 	const playPause = () => {
 		const video = videoRef.current;
@@ -174,34 +174,43 @@ export function MediaVideo({
 	let classNames = ns('MediaVideo');
 	if (isLoading) classNames += ` ${ns('-loading')}`;
 
-	return h('div', {class: ns('MediaVideo'), ref: containerRef, onMouseDown: playPause, onWheel: handleContainerWheel}, [
-		isLoading && h(Spinner, null),
-		h('video', {
-			ref: videoRef,
-			autoplay: true,
-			preload: false,
-			controls: false,
-			loop: true,
-			volume: settings.volume,
-			playbackRate: isFastForward ? settings.fastForwardRate : 1,
-			onError: () => setError(new Error('Video failed to load')),
-			src: url,
-		}),
-		h(VideoTimeline, {videoRef}),
-		h(
-			'div',
-			{
-				class: ns('volume'),
-				ref: volumeRef,
-				onMouseDown: initializeVolumeDragging,
-				style: hasAudio ? 'display: hidden' : '',
-			},
-			h('div', {
-				class: ns('bar'),
-				style: `height: ${Number(settings.volume) * 100}%`,
-			})
-		),
-	]);
+	return h(
+		'div',
+		{
+			class: ns('MediaVideo'),
+			ref: containerRef,
+			onMouseDown: ({button}: MouseEvent) => button === 0 && playPause(),
+			onWheel: handleContainerWheel,
+		},
+		[
+			isLoading && h(Spinner, null),
+			h('video', {
+				ref: videoRef,
+				autoplay: true,
+				preload: false,
+				controls: false,
+				loop: true,
+				volume: settings.volume,
+				playbackRate: isFastForward ? settings.fastForwardRate : 1,
+				onError: () => setError(new Error('Video failed to load')),
+				src: url,
+			}),
+			h(VideoTimeline, {videoRef}),
+			h(
+				'div',
+				{
+					class: ns('volume'),
+					ref: volumeRef,
+					onMouseDown: initializeVolumeDragging,
+					style: hasAudio ? 'display: hidden' : '',
+				},
+				h('div', {
+					class: ns('bar'),
+					style: `height: ${Number(settings.volume) * 100}%`,
+				})
+			),
+		]
+	);
 }
 
 interface VideoTimelineProps {
