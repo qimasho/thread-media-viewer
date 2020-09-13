@@ -2,6 +2,9 @@ import {h} from 'lib/preact';
 import {ns} from 'lib/utils';
 import {defaultSettings, useSettings} from 'settings';
 
+const TITLE = (version: string, date: string) =>
+	h('h2', null, h('code', null, [version, h('span', {class: ns('-muted')}, ' ⬩ '), h('small', null, date)]));
+
 export function Changelog() {
 	const settings = useSettings();
 
@@ -13,11 +16,18 @@ export function Changelog() {
 	return h('div', {class: ns('Changelog')}, [
 		h('h1', null, 'Changelog'),
 
-		h(
-			'h2',
-			null,
-			h('code', null, ['2.0.0', h('span', {class: ns('-muted')}, ' ⬩ '), h('small', null, '2020.09.12')])
-		),
+		TITLE('2.1.0', '2020.09.13'),
+		h('ul', null, [
+			h('li', null, 'Added "Thumbnail fit" setting.'),
+			h(
+				'li',
+				null,
+				'Catalog cursor now pre-selects the item that is closest to the center of the screen instead of always the 1st one.'
+			),
+			h('li', null, 'Added new version indicator (changelog button turns green until clicked)'),
+		]),
+
+		TITLE('2.0.0', '2020.09.12'),
 		h('ul', null, [
 			h(
 				'li',
