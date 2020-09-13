@@ -16,7 +16,7 @@ export function Changelog() {
 	return h('div', {class: ns('Changelog')}, [
 		h('h1', null, 'Changelog'),
 
-		TITLE('2.1.0', '2020.09.13'),
+		TITLE('2.1.1', '2020.09.13'),
 		h('ul', null, [
 			h('li', null, 'Added "Thumbnail fit" setting.'),
 			h(
@@ -25,6 +25,7 @@ export function Changelog() {
 				'Catalog cursor now pre-selects the item that is closest to the center of the screen instead of always the 1st one.'
 			),
 			h('li', null, 'Added new version indicator (changelog button turns green until clicked)'),
+			h('li', null, 'Fixed video pausing when clicked with other then primary mouse buttons.'),
 		]),
 
 		TITLE('2.0.0', '2020.09.12'),
