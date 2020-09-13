@@ -10,7 +10,8 @@ import {Help} from 'components/Help';
 import {Changelog} from 'components/Changelog';
 import {SideNav} from 'components/SideNav';
 
-const {min, max, round} = Math;
+const {min, max, sqrt, pow} = Math;
+const get2DDistance = (ax: number, ay: number, bx: number, by: number) => sqrt(pow(ax - bx, 2) + pow(ay - by, 2));
 
 interface CatalogNavigatorProps {
 	settings: SyncedStorage<Settings>;
@@ -22,10 +23,11 @@ export function CatalogNavigator({settings, watcher}: RenderableProps<CatalogNav
 	const itemsPerRow = useItemsPerRow(catalogContainerRef);
 	const cursorRef = useRef<HTMLElement>(null);
 	const [sideView, setSideView] = useState<string | null>(null);
-	const [selectedIndex, setSelectedIndex] = useState<number>(0);
+	const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 	const forceUpdate = useForceUpdate();
 	const [windowWidth, windowHeight] = useWindowDimensions();
-	const selectedThread = watcher.threads[selectedIndex] as ThreadLink | undefined;
+	const selectedThread =
+		selectedIndex != null ? (watcher.threads[selectedIndex] as ThreadLink | undefined) : undefined;
 	const enabled = settings.catalogNavigator;
 
 	// Listen on catalog changes
@@ -34,10 +36,42 @@ export function CatalogNavigator({settings, watcher}: RenderableProps<CatalogNav
 	// Listen on settings changes
 	useEffect(() => settings._subscribe(forceUpdate), [settings]);
 
+	// Handle thread pre-selection on load and enable
+	useEffect(() => {
+		// Deselect when disabling
+		if (selectedThread && !enabled) {
+			setSelectedIndex(null);
+			return;
+		}
+
+		// On load, select thread closest to the center of the screen
+		if (enabled && !selectedThread && watcher.threads.length > 0) {
+			const centerX = window.innerWidth / 2;
+			const centerY = window.innerHeight / 2;
+			let closest: {distance: number; index: number | null} = {distance: Infinity, index: null};
+
+			for (let i = 0; i < watcher.threads.length; i++) {
+				const rect = watcher.threads[i].container.getBoundingClientRect();
+				const distance = get2DDistance(
+					rect.left + rect.width / 2,
+					rect.top + rect.height / 2,
+					centerX,
+					centerY
+				);
+				if (distance < closest.distance) {
+					closest.distance = distance;
+					closest.index = i;
+				}
+			}
+
+			if (closest.index != null) setSelectedIndex(closest.index);
+		}
+	}, [selectedThread, watcher.threads, enabled]);
+
 	// Update cursor position
 	useEffect(() => {
 		const cursor = cursorRef.current;
-		const container = watcher.container;
+
 		if (!cursor || !selectedThread || !enabled) return;
 
 		const rect = getBoundingDocumentRect(selectedThread.container);
@@ -48,20 +82,21 @@ export function CatalogNavigator({settings, watcher}: RenderableProps<CatalogNav
 			height: `${rect.height + 8}px`,
 		});
 		scrollToView(selectedThread.container, {block: window.innerHeight / 2 - 200, behavior: 'smooth'});
-	}, [selectedThread, windowWidth, itemsPerRow, enabled]);
+	}, [selectedThread, watcher.threads, windowWidth, itemsPerRow, enabled]);
 
 	// Helpers
 	const clampIndex = (index: number) => setSelectedIndex(max(0, min(watcher.threads.length - 1, index)));
+	const moveSelectedIndex = (amount: number) => selectedIndex != null && clampIndex(selectedIndex + amount);
 	const toggleSettings = () => setSideView(sideView ? null : 'settings');
 
 	// Shortcuts
 	useKey(settings.keyToggleUI, toggleSettings);
-	useKey(enabled && settings.keyNavLeft, () => clampIndex(selectedIndex - 1));
-	useKey(enabled && settings.keyNavRight, () => clampIndex(selectedIndex + 1));
-	useKey(enabled && settings.keyNavUp, () => clampIndex(selectedIndex - itemsPerRow));
-	useKey(enabled && settings.keyNavDown, () => clampIndex(selectedIndex + itemsPerRow));
-	useKey(enabled && settings.keyNavPageBack, () => clampIndex(selectedIndex - itemsPerRow * 3));
-	useKey(enabled && settings.keyNavPageForward, () => clampIndex(selectedIndex + itemsPerRow * 3));
+	useKey(enabled && settings.keyNavLeft, () => moveSelectedIndex(-1));
+	useKey(enabled && settings.keyNavRight, () => moveSelectedIndex(+1));
+	useKey(enabled && settings.keyNavUp, () => moveSelectedIndex(-itemsPerRow));
+	useKey(enabled && settings.keyNavDown, () => moveSelectedIndex(+itemsPerRow));
+	useKey(enabled && settings.keyNavPageBack, () => moveSelectedIndex(-itemsPerRow * 3));
+	useKey(enabled && settings.keyNavPageForward, () => moveSelectedIndex(+itemsPerRow * 3));
 	useKey(enabled && settings.keyNavStart, () => clampIndex(0));
 	useKey(enabled && settings.keyNavEnd, () => clampIndex(Infinity));
 	useKey(enabled && settings.keyCatalogOpenThread, () => selectedThread && (location.href = selectedThread.url));
@@ -86,7 +121,7 @@ export function CatalogNavigator({settings, watcher}: RenderableProps<CatalogNav
 		SideViewContent &&
 			h('div', {class: classNames}, [
 				h(SideView, {key: sideView, onClose: () => setSideView(null)}, h(SideViewContent, null)),
-				h(SideNav, {active: sideView, onActive: setSideView})
+				h(SideNav, {active: sideView, onActive: setSideView}),
 			]),
 	]);
 }
