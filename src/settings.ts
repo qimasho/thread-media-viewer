@@ -2,6 +2,8 @@ import {createContext, useState, useContext, useEffect} from 'lib/preact';
 import {SyncedStorage} from 'lib/syncedStorage';
 
 export type Settings = {
+	lastAcknowledgedVersion: string;
+
 	mediaListWidth: number;
 	mediaListHeight: number;
 	mediaListItemsPerRow: number;
@@ -71,6 +73,8 @@ export type Settings = {
 }
 
 export const defaultSettings: Settings = {
+	lastAcknowledgedVersion: '2.1.1',
+
 	mediaListWidth: 640,
 	mediaListHeight: 0.5,
 	mediaListItemsPerRow: 3,

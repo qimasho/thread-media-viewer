@@ -7,6 +7,7 @@ import {MediaList} from 'components/MediaList';
 import {MediaVideo} from 'components/MediaVideo';
 import {MediaView} from 'components/MediaView';
 import {Settings} from 'components/Settings';
+import {SideNav} from 'components/SideNav';
 import {SideView} from 'components/SideView';
 import {Spinner} from 'components/Spinner';
 
@@ -19,6 +20,7 @@ const componentStyles = [
 	MediaVideo,
 	MediaView,
 	Settings,
+	SideNav,
 	SideView,
 	Spinner,
 ]

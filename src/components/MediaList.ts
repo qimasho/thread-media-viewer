@@ -3,6 +3,7 @@ import {ns, isOfType, clamp, scrollToView, getBoundingDocumentRect} from 'lib/ut
 import {useKey} from 'lib/hooks';
 import {Media} from 'lib/mediaWatcher';
 import {useSettings} from 'settings';
+import {SideNav} from 'components/SideNav';
 
 interface MediaListProps {
 	media: Media[];
@@ -14,7 +15,13 @@ interface MediaListProps {
 
 const {max, min, round} = Math;
 
-export function MediaList({media, activeIndex, sideView, onActivation, onOpenSideView}: RenderableProps<MediaListProps>) {
+export function MediaList({
+	media,
+	activeIndex,
+	sideView,
+	onActivation,
+	onOpenSideView,
+}: RenderableProps<MediaListProps>) {
 	const settings = useSettings();
 	const containerRef = useRef<HTMLElement>(null);
 	const listRef = useRef<HTMLElement>(null);
@@ -68,7 +75,9 @@ export function MediaList({media, activeIndex, sideView, onActivation, onOpenSid
 		const initialDocumentCursor = document.documentElement.style.cursor;
 		const resizeX = direction === 'ew' || direction === 'nwse';
 		const resizeY = direction === 'ns' || direction === 'nwse';
-		const initialCursorToRightEdgeDelta = containerRef.current ? event.clientX - containerRef.current.offsetWidth : 0;
+		const initialCursorToRightEdgeDelta = containerRef.current
+			? event.clientX - containerRef.current.offsetWidth
+			: 0;
 
 		function handleMouseMove(event: MouseEvent) {
 			const clampedListWidth = clamp(300, event.clientX - initialCursorToRightEdgeDelta, window.innerWidth - 300);
@@ -210,25 +219,13 @@ export function MediaList({media, activeIndex, sideView, onActivation, onOpenSid
 		]);
 	}
 
-	function sideViewAction(name: string, title: string) {
-		return h(
-			'button',
-			{class: sideView === name && ns('-active'), onClick: () => onOpenSideView(name)},
-			title
-		);
-	}
-
 	let classNames = ns('MediaList');
 	if (settings.thumbnailFit === 'cover') classNames += ` ${ns('-thumbnail-fit-cover')}`;
 
 	return h('div', {class: classNames, ref: containerRef}, [
 		h('div', {class: ns('list'), ref: listRef}, media.map(mediaItem)),
-		h('div', {class: ns('controls')}, [
-			h('div', {class: ns('actions')}, [
-				sideViewAction('settings', '⚙ settings'),
-				sideViewAction('help', '? help'),
-				sideViewAction('changelog', '☲ changelog'),
-			]),
+		h('div', {class: ns('status-bar')}, [
+			h(SideNav, {active: sideView, onActive: onOpenSideView}),
 			h('div', {class: ns('position')}, [
 				h('span', {class: ns('current')}, selectedIndex ? selectedIndex + 1 : 0),
 				h('span', {class: ns('separator')}, '/'),
@@ -402,50 +399,24 @@ MediaList.styles = `
 	background-clip: padding-box;
 	border: 1px solid #0008;
 }
-.${ns('MediaList')} > .${ns('controls')} {
+.${ns('MediaList')} > .${ns('status-bar')} {
 	display: grid;
 	grid-template-columns: 1fr auto;
 	grid-template-rows: 1fr;
 	margin: 0 2px;
 	font-size: calc(var(--list-meta-height) * 0.64);
 }
-.${ns('MediaList')} > .${ns('controls')} > * {
+.${ns('MediaList')} > .${ns('status-bar')} > * {
 	display: flex;
 	align-items: center;
 }
-.${ns('MediaList')} > .${ns('controls')} > .${ns('actions')} { min-width: 0; }
-.${ns('MediaList')} > .${ns('controls')} > .${ns('actions')} > button,
-.${ns('MediaList')} > .${ns('controls')} > .${ns('actions')} > button:active {
-	color: #eee;
-	background: #1c1c1c;
-	border: 0;
-	outline: 0;
-	border-radius: 2px;
-	font-size: .911em;
-	line-height: 1;
-	height: 20px;
-	padding: 0 .5em;
-	white-space: nowrap;
-	overflow: hidden;
-}
-.${ns('MediaList')} > .${ns('controls')} > .${ns('actions')} > button:hover {
-	color: #fff;
-	background: #333;
-}
-.${ns('MediaList')} > .${ns('controls')} > .${ns('actions')} > button + button {
-	margin-left: 2px;
-}
-.${ns('MediaList')} > .${ns('controls')} > .${ns('actions')} > button.${ns('-active')} {
-	color: #222;
-	background: #ccc;
-}
-.${ns('MediaList')} > .${ns('controls')} > .${ns('position')} {
+.${ns('MediaList')} > .${ns('status-bar')} > .${ns('position')} {
 	margin: 0 .4em;
 }
-.${ns('MediaList')} > .${ns('controls')} > .${ns('position')} > .${ns('current')} {
+.${ns('MediaList')} > .${ns('status-bar')} > .${ns('position')} > .${ns('current')} {
 	font-weight: bold;
 }
-.${ns('MediaList')} > .${ns('controls')} > .${ns('position')} > .${ns('separator')} {
+.${ns('MediaList')} > .${ns('status-bar')} > .${ns('position')} > .${ns('separator')} {
 	font-size: 1.05em;
 	margin: 0 0.15em;
 }

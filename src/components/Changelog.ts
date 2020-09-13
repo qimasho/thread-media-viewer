@@ -1,11 +1,23 @@
 import {h} from 'lib/preact';
 import {ns} from 'lib/utils';
+import {defaultSettings, useSettings} from 'settings';
 
 export function Changelog() {
+	const settings = useSettings();
+
+	// Clear new version indicator
+	if (settings.lastAcknowledgedVersion !== defaultSettings.lastAcknowledgedVersion) {
+		settings.lastAcknowledgedVersion = defaultSettings.lastAcknowledgedVersion;
+	}
+
 	return h('div', {class: ns('Changelog')}, [
 		h('h1', null, 'Changelog'),
 
-		h('h2', null, h('code', null, ['2.0.0', h('span', {class: ns('-muted')}, ' ⬩ '), h('small', null, '2020.09.11')])),
+		h(
+			'h2',
+			null,
+			h('code', null, ['2.0.0', h('span', {class: ns('-muted')}, ' ⬩ '), h('small', null, '2020.09.12')])
+		),
 		h('ul', null, [
 			h(
 				'li',

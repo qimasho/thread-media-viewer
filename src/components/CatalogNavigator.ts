@@ -8,6 +8,7 @@ import {SideView} from 'components/SideView';
 import {Settings as SettingsComponent} from 'components/Settings';
 import {Help} from 'components/Help';
 import {Changelog} from 'components/Changelog';
+import {SideNav} from 'components/SideNav';
 
 const {min, max, round} = Math;
 
@@ -77,10 +78,6 @@ export function CatalogNavigator({settings, watcher}: RenderableProps<CatalogNav
 	if (sideView === 'settings') SideViewContent = SettingsComponent;
 	if (sideView === 'changelog') SideViewContent = Changelog;
 
-	function sideViewAction(name: string, title: string) {
-		return h('button', {class: sideView === name && ns('-active'), onClick: () => setSideView(name)}, title);
-	}
-
 	let classNames = ns('CatalogNavigator');
 	if (sideView) classNames += ` ${ns('-is-open')}`;
 
@@ -89,11 +86,7 @@ export function CatalogNavigator({settings, watcher}: RenderableProps<CatalogNav
 		SideViewContent &&
 			h('div', {class: classNames}, [
 				h(SideView, {key: sideView, onClose: () => setSideView(null)}, h(SideViewContent, null)),
-				h('div', {class: ns('navigation')}, [
-					sideViewAction('settings', '⚙ settings'),
-					sideViewAction('help', '? help'),
-					sideViewAction('changelog', '☲ changelog'),
-				]),
+				h(SideNav, {active: sideView, onActive: setSideView})
 			]),
 	]);
 }
@@ -123,35 +116,13 @@ CatalogNavigator.styles = `
 	width: 100%;
 	height: 0;
 }
-.${ns('CatalogNavigator')} > .${ns('navigation')} {
+.${ns('CatalogNavigator')} > .${ns('SideNav')} {
 	position: fixed;
 	left: 2px;
 	bottom: calc(var(--media-list-height) - 0.2em);
+	padding: 2px;
+	border-radius: 3px;
+	background: #161616;
 }
-.${ns('CatalogNavigator')} > .${ns('navigation')} > button,
-.${ns('CatalogNavigator')} > .${ns('navigation')} > button:active {
-	color: #eee;
-	background: #1c1c1c;
-	border: 0;
-	outline: 0;
-	border-radius: 2px;
-	font-size: .911em;
-	line-height: 1;
-	height: 20px;
-	padding: 0 .5em;
-	white-space: nowrap;
-	overflow: hidden;
-	box-shadow: 0 0 0 2px #161616;
-}
-.${ns('CatalogNavigator')} > .${ns('navigation')} > button:hover {
-	color: #fff;
-	background: #333;
-}
-.${ns('CatalogNavigator')} > .${ns('navigation')} > button + button {
-	margin-left: 2px;
-}
-.${ns('CatalogNavigator')} > .${ns('navigation')} > button.${ns('-active')} {
-	color: #222;
-	background: #ccc;
-}
+
 `;
