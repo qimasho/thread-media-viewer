@@ -44,8 +44,8 @@ export function ThreadMediaViewer({settings, watcher}: RenderableProps<ThreadMed
 			const cappedListWidth = clamp(300, settings.mediaListWidth, window.innerWidth - 300);
 			container.style.setProperty('--media-list-width', `${cappedListWidth}px`);
 
-			// Calculate an item height to achieve 5:4 item size ratio. CSS sux.
-			const itemHeight = round((cappedListWidth / settings.mediaListItemsPerRow) * 0.8);
+			// Calculate an item height to achieve around 1:1 item size ratio. CSS sux.
+			const itemHeight = round((cappedListWidth - 10 /*~scrollbar*/) / settings.mediaListItemsPerRow);
 			container.style.setProperty('--media-list-item-height', `${itemHeight}px`);
 
 			// Media list height, set as rounded vh unit

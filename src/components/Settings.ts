@@ -152,6 +152,32 @@ export function Settings() {
 					h('code', null, settings.mediaListItemsPerRow),
 				]),
 			]),
+
+			h('article', null, [
+				h('header', null, 'Thumbnail fit'),
+				h('section', null, [
+					h('label', null, [
+						h('input', {
+							type: 'radio',
+							name: 'thumbnailFit',
+							value: 'contain',
+							checked: settings.thumbnailFit === 'contain',
+							onInput: () => (settings.thumbnailFit = 'contain'),
+						}),
+						' contain',
+					]),
+					h('label', null, [
+						h('input', {
+							type: 'radio',
+							name: 'thumbnailFit',
+							value: 'cover',
+							checked: settings.thumbnailFit === 'cover',
+							onInput: () => (settings.thumbnailFit = 'cover'),
+						}),
+						' cover',
+					]),
+				]),
+			]),
 		]),
 
 		h('fieldset', compactPropsM, [

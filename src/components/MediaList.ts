@@ -218,7 +218,10 @@ export function MediaList({media, activeIndex, sideView, onActivation, onOpenSid
 		);
 	}
 
-	return h('div', {class: ns('MediaList'), ref: containerRef}, [
+	let classNames = ns('MediaList');
+	if (settings.thumbnailFit === 'cover') classNames += ` ${ns('-thumbnail-fit-cover')}`;
+
+	return h('div', {class: classNames, ref: containerRef}, [
 		h('div', {class: ns('list'), ref: listRef}, media.map(mediaItem)),
 		h('div', {class: ns('controls')}, [
 			h('div', {class: ns('actions')}, [
@@ -258,6 +261,7 @@ MediaList.styles = `
 	--item-meta-height: 18px;
 	--list-meta-height: 24px;
 	--active-color: #fff;
+	--thumbnail-fit: contain;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -269,6 +273,7 @@ MediaList.styles = `
 	background: #111;
 	box-shadow: 0px 0px 0 3px #0003;
 }
+.${ns('MediaList')}.${ns('-thumbnail-fit-cover')} { --thumbnail-fit: cover; }
 .${ns('MediaList')} > .${ns('dragger-x')} {
 	position: absolute;
 	left: 100%; top: 0;
@@ -330,7 +335,7 @@ MediaList.styles = `
 	width: 100%;
 	height: calc(var(--media-list-item-height) - var(--item-meta-height) - (var(--item-border-size) * 2));
 	background-clip: padding-box;
-	object-fit: contain;
+	object-fit: var(--thumbnail-fit);
 }
 .${ns('MediaList')} > .${ns('list')} > a.${ns('active')} > img {
 	border: 1px solid transparent;

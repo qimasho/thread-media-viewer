@@ -5,6 +5,7 @@ export type Settings = {
 	mediaListWidth: number;
 	mediaListHeight: number;
 	mediaListItemsPerRow: number;
+	thumbnailFit: 'contain' | 'cover',
 
 	// Video player
 	volume: number, // 0-1
@@ -73,6 +74,7 @@ export const defaultSettings: Settings = {
 	mediaListWidth: 640,
 	mediaListHeight: 0.5,
 	mediaListItemsPerRow: 3,
+	thumbnailFit: 'contain',
 
 	// Video Player
 	volume: 0.5,
