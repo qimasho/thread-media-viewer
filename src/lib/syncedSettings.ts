@@ -19,19 +19,19 @@ export type SyncedSettings<T extends SettingsData> = T & SyncedSettingsControls<
  * synchronization between tabs and change subscriptions.
  *
  * ```
- * let storage = syncedStorage('localStorageKey'); // pre-loads
- * storage.foo; // retrieve
- * storage.foo = 5; // saves to localStorage automatically (debounced by 10ms)
- * const unsubscribe = storage._subscribe((storage) => {}); // called when this or other tab changes storage
+ * let settings = syncedSettings('localStorageKey', {defaults: 'foo}); // pre-loads
+ * settings.foo; // retrieve
+ * settings.foo = 5; // saves to localStorage automatically (debounced by 10ms)
+ * const unsubscribe = settings._subscribe((settings) => {}); // called when this or other tab changes settings
  * ```
  */
 export function syncedSettings<T extends SettingsData>(localStorageKey: string, defaults: T): SyncedSettings<T> {
 	const listeners: Set<Callback<T>> = new Set();
 	let savingPromise: Promise<void> | null = null;
-	let storage: T = load();
+	let settings: T = load();
 
 	function triggerListeners() {
-		for (let callback of listeners) callback(storage);
+		for (let callback of listeners) callback(settings);
 	}
 
 	function load(): T {
@@ -49,7 +49,7 @@ export function syncedSettings<T extends SettingsData>(localStorageKey: string, 
 		if (savingPromise) return savingPromise;
 		savingPromise = new Promise((resolve) =>
 			setTimeout(() => {
-				localStorage.setItem(localStorageKey, JSON.stringify(storage));
+				localStorage.setItem(localStorageKey, JSON.stringify(settings));
 				savingPromise = null;
 				resolve();
 			}, 10)
@@ -64,9 +64,9 @@ export function syncedSettings<T extends SettingsData>(localStorageKey: string, 
 			let newData = load();
 			let hasChanges = false;
 			for (let key in newData) {
-				if (newData[key] !== storage[key]) {
+				if (newData[key] !== settings[key]) {
 					hasChanges = true;
-					storage[key] = newData[key];
+					settings[key] = newData[key];
 				}
 			}
 			if (hasChanges) triggerListeners();
@@ -75,7 +75,7 @@ export function syncedSettings<T extends SettingsData>(localStorageKey: string, 
 
 	const control: SyncedSettingsControls<T> = {
 		_assign(obj) {
-			Object.assign(storage, obj);
+			Object.assign(settings, obj);
 			save();
 			triggerListeners();
 		},
@@ -95,22 +95,22 @@ export function syncedSettings<T extends SettingsData>(localStorageKey: string, 
 	};
 
 	// @ts-ignore please I don't want to type another proxy in TS
-	return (new Proxy(storage, {
+	return (new Proxy(settings, {
 		get(_, prop) {
 			if (isOfType<keyof typeof control>(prop, prop in control)) return control[prop];
-			if (isOfType<keyof T>(prop, prop in storage)) return storage[prop];
+			if (isOfType<keyof T>(prop, prop in settings)) return settings[prop];
 			throw new Error(
-				`SyncedStorage: property "${String(prop)}" does not exist in "${localStorageKey}" storage.`
+				`SyncedStorage: property "${String(prop)}" does not exist in "${localStorageKey}".`
 			);
 		},
 		set(_, prop, value) {
-			if (isOfType<keyof T>(prop, prop in storage)) {
-				storage[prop as keyof T] = value;
+			if (isOfType<keyof T>(prop, prop in settings)) {
+				settings[prop as keyof T] = value;
 				save();
 				triggerListeners();
 				return true;
 			}
-			throw new Error(`Trying to set an unknown "${localStorageKey}" storage property "${String(prop)}"`);
+			throw new Error(`Trying to set an unknown "${localStorageKey}" property "${String(prop)}"`);
 		},
 	}) as unknown) as T;
 }
