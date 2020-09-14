@@ -254,7 +254,7 @@ MediaList.styles = `
 }
 
 .${ns('MediaList')} {
-	--item-border-size: 1px;
+	--item-border-size: 2px;
 	--item-meta-height: 18px;
 	--list-meta-height: 24px;
 	--active-color: #fff;
@@ -323,10 +323,9 @@ MediaList.styles = `
 	top: 0; left: 0;
 	width: 100%;
 	height: 100%;
-	border: 1px solid #2225;
+	border: 2px solid #222a;
 	pointer-events: none;
 }
-.${ns('MediaList')} > .${ns('list')} > a.${ns('active')}.${ns('selected')}:after { border-color: #222a; }
 .${ns('MediaList')} > .${ns('list')} > a > img {
 	display: block;
 	width: 100%;
