@@ -16,6 +16,16 @@ export function Changelog() {
 	return h('div', {class: ns('Changelog')}, [
 		h('h1', null, 'Changelog'),
 
+		TITLE('2.1.1', '2020.09.14'),
+		h('ul', null, [
+			h('li', null, 'Style tweaks.'),
+			h(
+				'li',
+				null,
+				'Added an option to click on the text portion of the thumbnail (media list) or thread title/snippet (catalog) to move cursor to that item.'
+			),
+		]),
+
 		TITLE('2.1.1', '2020.09.13'),
 		h('ul', null, [
 			h('li', null, 'Added "Thumbnail fit" setting.'),
