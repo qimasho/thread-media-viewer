@@ -16,7 +16,7 @@ export function Changelog() {
 	return h('div', {class: ns('Changelog')}, [
 		h('h1', null, 'Changelog'),
 
-		TITLE('2.1.1', '2020.09.14'),
+		TITLE('2.1.2', '2020.09.14'),
 		h('ul', null, [
 			h('li', null, 'Style tweaks.'),
 			h(

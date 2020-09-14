@@ -128,8 +128,8 @@ export function MediaList({
 	// Keyboard navigation
 	const selectUp = () => selectedIndex != null && selectAndScrollTo(max(selectedIndex - itemsPerRow, 0));
 	const selectDown = () => {
-		// Scroll the whole page to the bottom when S is pressed when already at the end of the media list.
-		// This allows comfy way how to clear new posts notifications.
+		// Scroll the whole page to the bottom when `s` is pressed when already at the end of media list.
+		// This allows a comfy way how to clear new posts indicator.
 		if (selectedIndex == media.length - 1) {
 			document.scrollingElement?.scrollTo({
 				top: document.scrollingElement.scrollHeight,
