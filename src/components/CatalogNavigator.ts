@@ -95,7 +95,7 @@ export function CatalogNavigator({settings, watcher}: RenderableProps<CatalogNav
 
 			if (threadContainer) {
 				const index = watcher.threads.findIndex((thread) => thread.container === threadContainer);
-				if (index) setSelectedIndex(index);
+				if (index != null) setSelectedIndex(index);
 			}
 		}
 
