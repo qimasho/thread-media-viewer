@@ -1,5 +1,5 @@
 import {h, FunctionComponent, RenderableProps, useState, useEffect, useRef} from 'lib/preact';
-import {ns, getBoundingDocumentRect, scrollToView} from 'lib/utils';
+import {ns, getBoundingDocumentRect, scrollToView, isOfType} from 'lib/utils';
 import {useKey, useForceUpdate, useItemsPerRow, useWindowDimensions, useGesture} from 'lib/hooks';
 import {Settings, SettingsProvider} from 'settings';
 import {CatalogWatcher, ThreadLink} from 'lib/catalogWatcher';
@@ -83,6 +83,25 @@ export function CatalogNavigator({settings, watcher}: RenderableProps<CatalogNav
 		});
 		scrollToView(selectedThread.container, {block: window.innerHeight / 2 - 200, behavior: 'smooth'});
 	}, [selectedThread, watcher.threads, windowWidth, itemsPerRow, enabled]);
+
+	// Select thread if user clicks on it (enables clicking on title/description to move cursor on that thread)
+	useEffect(() => {
+		function handleCLick(event: MouseEvent) {
+			const target = event.target;
+
+			if (!isOfType<HTMLElement>(target, !!target && 'closest' in target)) return;
+
+			const threadContainer = target.closest<HTMLElement>(`${watcher.serializer.selector} > *`);
+
+			if (threadContainer) {
+				const index = watcher.threads.findIndex((thread) => thread.container === threadContainer);
+				if (index) setSelectedIndex(index);
+			}
+		}
+
+		watcher.container.addEventListener('click', handleCLick);
+		return () => watcher.container.removeEventListener('click', handleCLick);
+	}, [watcher.container]);
 
 	// Helpers
 	const clampIndex = (index: number) => setSelectedIndex(max(0, min(watcher.threads.length - 1, index)));
