@@ -53,6 +53,10 @@ export function Help() {
 			h('li', null, ['Right button gesture ', h('kbd', null, '↑'), ' to toggle media list.']),
 			h('li', null, ['Right button gesture ', h('kbd', null, '↓'), ' to close media view.']),
 			h('li', null, [h('kbd', null, 'click'), ' on thumbnail (thread or list) to open media viewer.']),
+			h('li', null, [
+				h('kbd', null, 'click'),
+				' on text portion of thumbnail (thread media list) or thread title/snippet (catalog) to move cursor to that item.',
+			]),
 			h('li', null, [h('kbd', null, 'shift+click'), ' on thumbnail (thread) to open both media view and list.']),
 			h('li', null, [h('kbd', null, 'double-click'), ' to toggle fullscreen.']),
 			h('li', null, [h('kbd', null, 'mouse wheel'), ' on video to change audio volume.']),
