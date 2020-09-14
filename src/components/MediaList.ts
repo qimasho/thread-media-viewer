@@ -193,9 +193,9 @@ export function MediaList({
 		{url, thumbnailUrl, extension, isVideo, isGif, replies, size, width, height}: Media,
 		index: number
 	) {
-		let classNames = '';
-		if (selectedIndex === index) classNames += ns('selected');
-		if (activeIndex === index) classNames += ` ${ns('active')}`;
+		let classNames = ns('item');
+		if (selectedIndex === index) classNames += ` ${ns('-selected')}`;
+		if (activeIndex === index) classNames += ` ${ns('-active')}`;
 
 		function onClick(event: MouseEvent) {
 			event.preventDefault();
@@ -209,9 +209,9 @@ export function MediaList({
 			metaStr = size ? `${size}, ${widthAndHeight}` : widthAndHeight;
 		}
 
-		return h('a', {key: url, href: url, class: classNames, onClick}, [
-			h('img', {src: thumbnailUrl}),
-			metaStr && h('span', {class: ns('meta')}, metaStr),
+		return h('div', {key: url, class: classNames}, [
+			h('a', {href: url, onClick}, h('img', {src: thumbnailUrl})),
+			metaStr && h('span', {class: ns('meta'), onClick: () => setSelectedIndex(index)}, metaStr),
 			(isVideo || isGif) && h('span', {class: ns('video-type')}, null, extension),
 			replies != null &&
 				replies > 0 &&
@@ -300,9 +300,8 @@ MediaList.styles = `
 	overflow-x: hidden;
 	scrollbar-width: thin;
 }
-.${ns('MediaList')} > .${ns('list')} > a {
+.${ns('MediaList')} > .${ns('list')} > .${ns('item')} {
 	position: relative;
-	display: block;
 	background: none;
 	border: var(--item-border-size) solid transparent;
 	padding: 0;
@@ -310,13 +309,13 @@ MediaList.styles = `
 	background-clip: padding-box;
 	outline: none;
 }
-.${ns('MediaList')} > .${ns('list')} > a.${ns('selected')} {
+.${ns('MediaList')} > .${ns('list')} > .${ns('item')}.${ns('-selected')} {
 	border-color: var(--active-color);
 }
-.${ns('MediaList')} > .${ns('list')} > a.${ns('active')} {
+.${ns('MediaList')} > .${ns('list')} > .${ns('item')}.${ns('-active')} {
 	background-color: var(--active-color);
 }
-.${ns('MediaList')} > .${ns('list')} > a.${ns('selected')}:after {
+.${ns('MediaList')} > .${ns('list')} > .${ns('item')}.${ns('-selected')}:after {
 	content: '';
 	display: block;
 	position: absolute;
@@ -326,18 +325,18 @@ MediaList.styles = `
 	border: 2px solid #222a;
 	pointer-events: none;
 }
-.${ns('MediaList')} > .${ns('list')} > a > img {
+.${ns('MediaList')} > .${ns('list')} > .${ns('item')} img {
 	display: block;
 	width: 100%;
 	height: calc(var(--media-list-item-height) - var(--item-meta-height) - (var(--item-border-size) * 2));
 	background-clip: padding-box;
 	object-fit: var(--thumbnail-fit);
 }
-.${ns('MediaList')} > .${ns('list')} > a.${ns('active')} > img {
+.${ns('MediaList')} > .${ns('list')} > .${ns('item')}.${ns('-active')} img {
 	border: 1px solid transparent;
 	border-bottom: 0;
 }
-.${ns('MediaList')} > .${ns('list')} > a > .${ns('meta')} {
+.${ns('MediaList')} > .${ns('list')} > .${ns('item')} > .${ns('meta')} {
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -354,14 +353,13 @@ MediaList.styles = `
 		0px 1px #0003, 0px -1px #0003, 1px 0px #0003, -1px 0px #0003;
 	white-space: nowrap;
 	overflow: hidden;
-	pointer-events: none;
 }
-.${ns('MediaList')} > .${ns('list')} > a.${ns('active')} > .${ns('meta')} {
+.${ns('MediaList')} > .${ns('list')} > .${ns('item')}.${ns('-active')} > .${ns('meta')} {
 	color: #222;
 	text-shadow: none;
 	background: #0001;
 }
-.${ns('MediaList')} > .${ns('list')} > a > .${ns('video-type')} {
+.${ns('MediaList')} > .${ns('list')} > .${ns('item')} > .${ns('video-type')} {
 	display: block;
 	position: absolute;
 	top: 50%;
@@ -379,7 +377,7 @@ MediaList.styles = `
 	background-clip: padding-box;
 	pointer-events: none;
 }
-.${ns('MediaList')} > .${ns('list')} > a > .${ns('replies')} {
+.${ns('MediaList')} > .${ns('list')} > .${ns('item')} > .${ns('replies')} {
 	display: block;
 	position: absolute;
 	bottom: calc(var(--item-meta-height) + 2px);
@@ -389,7 +387,7 @@ MediaList.styles = `
 	justify-content: center;
 	flex-wrap: wrap-reverse;
 }
-.${ns('MediaList')} > .${ns('list')} > a > .${ns('replies')} > span {
+.${ns('MediaList')} > .${ns('list')} > .${ns('item')} > .${ns('replies')} > span {
 	display: block;
 	width: 6px;
 	height: 6px;
