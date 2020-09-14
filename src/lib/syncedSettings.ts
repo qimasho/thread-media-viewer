@@ -1,10 +1,10 @@
 import {isOfType, throttle} from 'lib/utils';
 
-export type StorageData = Record<string, null | undefined | number | string | boolean>;
+export type SettingsData = Record<string, null | undefined | number | string | boolean>;
 
 export type Callback<T> = (data: T) => void;
 
-export interface SyncedStorageControls<T extends any> {
+export interface SyncedSettingsControls<T extends any> {
 	_assign(obj: Partial<T>): void;
 	_reset(): void;
 	_subscribe(callback: Callback<T>): void;
@@ -12,7 +12,7 @@ export interface SyncedStorageControls<T extends any> {
 	_defaults: T;
 }
 
-export type SyncedStorage<T extends StorageData> = T & SyncedStorageControls<T>;
+export type SyncedSettings<T extends SettingsData> = T & SyncedSettingsControls<T>;
 
 /**
  * localStorage wrapper that saves into a namespaced key as json, and provides
@@ -25,7 +25,7 @@ export type SyncedStorage<T extends StorageData> = T & SyncedStorageControls<T>;
  * const unsubscribe = storage._subscribe((storage) => {}); // called when this or other tab changes storage
  * ```
  */
-export function syncedStorage<T extends StorageData>(localStorageKey: string, defaults: T): SyncedStorage<T> {
+export function syncedSettings<T extends SettingsData>(localStorageKey: string, defaults: T): SyncedSettings<T> {
 	const listeners: Set<Callback<T>> = new Set();
 	let savingPromise: Promise<void> | null = null;
 	let storage: T = load();
@@ -73,7 +73,7 @@ export function syncedStorage<T extends StorageData>(localStorageKey: string, de
 		}, 500)
 	);
 
-	const control: SyncedStorageControls<T> = {
+	const control: SyncedSettingsControls<T> = {
 		_assign(obj) {
 			Object.assign(storage, obj);
 			save();

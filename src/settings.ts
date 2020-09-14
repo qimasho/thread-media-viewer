@@ -1,5 +1,5 @@
 import {createContext, useState, useContext, useEffect} from 'lib/preact';
-import {SyncedStorage} from 'lib/syncedStorage';
+import {SyncedSettings} from 'lib/syncedSettings';
 
 export type Settings = {
 	lastAcknowledgedVersion: string;
@@ -143,12 +143,12 @@ export const defaultSettings: Settings = {
 	keyCatalogOpenThreadInBackgroundTab: 'F'
 };
 
-const SettingsContext = createContext<SyncedStorage<Settings> | null>(null);
+const SettingsContext = createContext<SyncedSettings<Settings> | null>(null);
 
 /**
  * Updates settings when they change
  */
-export function useSettings(): SyncedStorage<Settings> {
+export function useSettings(): SyncedSettings<Settings> {
 	const syncedSettings = useContext(SettingsContext);
 	if (!syncedSettings) throw new Error();
 	const [_, update] = useState(NaN);

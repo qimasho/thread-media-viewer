@@ -3,7 +3,7 @@ import {isOfType, ns, clamp} from 'lib/utils';
 import {useKey, useForceUpdate, useWindowDimensions, useGesture} from 'lib/hooks';
 import {Settings, SettingsProvider} from 'settings';
 import {MediaWatcher} from 'lib/mediaWatcher';
-import {SyncedStorage} from 'lib/syncedStorage';
+import {SyncedSettings} from 'lib/syncedSettings';
 import {SideView} from 'components/SideView';
 import {Settings as SettingsComponent} from 'components/Settings';
 import {Help} from 'components/Help';
@@ -14,7 +14,7 @@ import {MediaView} from 'components/MediaView';
 const {round} = Math;
 
 interface ThreadMediaViewerProps {
-	settings: SyncedStorage<Settings>;
+	settings: SyncedSettings<Settings>;
 	watcher: MediaWatcher;
 }
 

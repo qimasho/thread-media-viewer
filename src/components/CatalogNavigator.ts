@@ -3,7 +3,7 @@ import {ns, getBoundingDocumentRect, scrollToView} from 'lib/utils';
 import {useKey, useForceUpdate, useItemsPerRow, useWindowDimensions, useGesture} from 'lib/hooks';
 import {Settings, SettingsProvider} from 'settings';
 import {CatalogWatcher, ThreadLink} from 'lib/catalogWatcher';
-import {SyncedStorage} from 'lib/syncedStorage';
+import {SyncedSettings} from 'lib/syncedSettings';
 import {SideView} from 'components/SideView';
 import {Settings as SettingsComponent} from 'components/Settings';
 import {Help} from 'components/Help';
@@ -14,7 +14,7 @@ const {min, max, sqrt, pow} = Math;
 const get2DDistance = (ax: number, ay: number, bx: number, by: number) => sqrt(pow(ax - bx, 2) + pow(ay - by, 2));
 
 interface CatalogNavigatorProps {
-	settings: SyncedStorage<Settings>;
+	settings: SyncedSettings<Settings>;
 	watcher: CatalogWatcher;
 }
 

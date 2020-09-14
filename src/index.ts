@@ -1,4 +1,4 @@
-import {syncedStorage} from 'lib/syncedStorage';
+import {syncedSettings} from 'lib/syncedSettings';
 import {SERIALIZERS} from './serializers';
 import {h, render} from 'lib/preact';
 import {ns, throttle} from 'lib/utils';
@@ -16,7 +16,7 @@ const serializer = SERIALIZERS.find((serializer) => serializer.urlMatches.exec(l
 
 if (serializer) {
 	const {threadSerializer, catalogSerializer} = serializer;
-	const settings = syncedStorage<Settings>(ns('settings'), defaultSettings);
+	const settings = syncedSettings<Settings>(ns('settings'), defaultSettings);
 	let mediaWatcher: MediaWatcher | null = null;
 	let catalogWatcher: CatalogWatcher | null = null;
 

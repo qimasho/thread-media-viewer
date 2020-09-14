@@ -128,8 +128,8 @@ export function useElementSize(
 }
 
 /**
- * Checks how many items fit per row in grid styles element, and updates the
- * value every time the container or it's children count change.
+ * Checks how many items fit per row in grid styled containers, and updates the
+ * value every time the container size or it's children count changes.
  *
  * In case there is not more than 1 row of items in the container, it will
  * return the current number of items in a container.
@@ -227,7 +227,7 @@ export const useGesture = (() => {
 
 	window.addEventListener('mousedown', startGesture);
 
-	return function _useKey(gesture: string | undefined | null | false, callback: () => void) {
+	return function useGesture(gesture: string | undefined | null | false, callback: () => void) {
 		useEffect(() => {
 			if (!gesture) return;
 			let callbacks = callbacksByGesture.get(gesture);
