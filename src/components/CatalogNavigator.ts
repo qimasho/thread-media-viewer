@@ -81,7 +81,6 @@ export function CatalogNavigator({settings, watcher}: RenderableProps<CatalogNav
 			width: `${rect.width + 8}px`,
 			height: `${rect.height + 8}px`,
 		});
-		scrollToView(selectedThread.container, {block: window.innerHeight / 2 - 200, behavior: 'smooth'});
 	}, [selectedThread, watcher.threads, windowWidth, itemsPerRow, enabled]);
 
 	// Select thread if user clicks on it (enables clicking on title/description to move cursor on that thread)
@@ -104,20 +103,27 @@ export function CatalogNavigator({settings, watcher}: RenderableProps<CatalogNav
 	}, [watcher.container]);
 
 	// Helpers
-	const clampIndex = (index: number) => setSelectedIndex(max(0, min(watcher.threads.length - 1, index)));
-	const moveSelectedIndex = (amount: number) => selectedIndex != null && clampIndex(selectedIndex + amount);
+	const navToIndex = (index: number) => {
+		const clampedIndex = max(0, min(watcher.threads.length - 1, index));
+		const selectedThreadContainer = watcher.threads[clampedIndex].container;
+		if (selectedThreadContainer) {
+			setSelectedIndex(clampedIndex);
+			scrollToView(selectedThreadContainer, {block: window.innerHeight / 2 - 200, behavior: 'smooth'});
+		}
+	};
+	const navBy = (amount: number) => selectedIndex != null && navToIndex(selectedIndex + amount);
 	const toggleSettings = () => setSideView(sideView ? null : 'settings');
 
 	// Shortcuts
 	useKey(settings.keyToggleUI, toggleSettings);
-	useKey(enabled && settings.keyNavLeft, () => moveSelectedIndex(-1));
-	useKey(enabled && settings.keyNavRight, () => moveSelectedIndex(+1));
-	useKey(enabled && settings.keyNavUp, () => moveSelectedIndex(-itemsPerRow));
-	useKey(enabled && settings.keyNavDown, () => moveSelectedIndex(+itemsPerRow));
-	useKey(enabled && settings.keyNavPageBack, () => moveSelectedIndex(-itemsPerRow * 3));
-	useKey(enabled && settings.keyNavPageForward, () => moveSelectedIndex(+itemsPerRow * 3));
-	useKey(enabled && settings.keyNavStart, () => clampIndex(0));
-	useKey(enabled && settings.keyNavEnd, () => clampIndex(Infinity));
+	useKey(enabled && settings.keyNavLeft, () => navBy(-1));
+	useKey(enabled && settings.keyNavRight, () => navBy(+1));
+	useKey(enabled && settings.keyNavUp, () => navBy(-itemsPerRow));
+	useKey(enabled && settings.keyNavDown, () => navBy(+itemsPerRow));
+	useKey(enabled && settings.keyNavPageBack, () => navBy(-itemsPerRow * 3));
+	useKey(enabled && settings.keyNavPageForward, () => navBy(+itemsPerRow * 3));
+	useKey(enabled && settings.keyNavStart, () => navToIndex(0));
+	useKey(enabled && settings.keyNavEnd, () => navToIndex(Infinity));
 	useKey(enabled && settings.keyCatalogOpenThread, () => selectedThread && (location.href = selectedThread.url));
 	useKey(enabled && settings.keyCatalogOpenThreadInNewTab, () => {
 		if (selectedThread) GM_openInTab(selectedThread.url, {active: true});
