@@ -29,6 +29,7 @@ export function MediaVideo({
 	const [isFastForward, setIsFastForward] = useState(false);
 	const [error, setError] = useState<Error | MediaError | null>(null);
 	const [containerWidth, containerHeight] = useElementSize(containerRef);
+	const [speed, setSpeed] = useState<number>(1);
 
 	// Initialization
 	useLayoutEffect(() => {
@@ -152,6 +153,11 @@ export function MediaVideo({
 		settings.volume = min(settings.volume + settings.adjustVolumeBy, 1);
 		flashVolume();
 	});
+	useKey(settings.keyViewSpeedDown, () =>
+		setSpeed((speed) => Math.max(settings.adjustSpeedBy, speed - settings.adjustSpeedBy))
+	);
+	useKey(settings.keyViewSpeedUp, () => setSpeed((speed) => speed + settings.adjustSpeedBy));
+	useKey(settings.keyViewSpeedReset, () => setSpeed(1));
 	useKey(settings.keyViewFastForward, (event) => {
 		if (event.repeat) return;
 		if (settings.fastForwardActivation === 'hold') setIsFastForward(true);
@@ -191,7 +197,7 @@ export function MediaVideo({
 				controls: false,
 				loop: true,
 				volume: settings.volume,
-				playbackRate: isFastForward ? settings.fastForwardRate : 1,
+				playbackRate: isFastForward ? settings.fastForwardRate : speed,
 				onError: () => setError(new Error('Video failed to load')),
 				src: url,
 			}),
@@ -209,6 +215,7 @@ export function MediaVideo({
 					style: `height: ${Number(settings.volume) * 100}%`,
 				})
 			),
+			speed !== 1 && h('div', {class: ns('speed')}, `${speed.toFixed(2)}x`)
 		]
 	);
 }
@@ -438,5 +445,15 @@ MediaVideo.styles = `
 	bottom: 0;
 	width: 100%;
 	background: #eee;
+}
+.${ns('MediaVideo')} > .${ns('speed')} {
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	padding: .5em .7em;
+	font-size: 0.9em;
+	font-family: "Lucida Console", Monaco, monospace;
+	color: #fff;
+	text-shadow: 1px 1px 0 #000a, -1px -1px 0 #000a, -1px 1px 0 #000a, 1px -1px 0 #000a, 0 1px 0 #000a, 1px 0 0 #000a;
 }
 `;

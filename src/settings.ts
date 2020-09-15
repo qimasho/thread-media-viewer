@@ -14,6 +14,7 @@ export type Settings = {
 	fastForwardActivation: 'hold' | 'toggle',
 	fastForwardRate: number,
 	adjustVolumeBy: number, // 0-1
+	adjustSpeedBy: number, // 0-1
 	seekBy: number, // seconds
 	endTimeFormat: 'total' | 'remaining',
 
@@ -53,6 +54,9 @@ export type Settings = {
 	keyViewFastForward: string | null,
 	keyViewVolumeDown: string | null,
 	keyViewVolumeUp: string | null,
+	keyViewSpeedDown: string | null,
+	keyViewSpeedUp: string | null,
+	keyViewSpeedReset: string | null,
 	keyViewSeekBack: string | null,
 	keyViewSeekForward: string | null,
 	keyViewSeekTo0: string | null,
@@ -85,6 +89,7 @@ export const defaultSettings: Settings = {
 	fastForwardActivation: 'hold',
 	fastForwardRate: 5,
 	adjustVolumeBy: 0.125,
+	adjustSpeedBy: 0.5,
 	seekBy: 5,
 	endTimeFormat: 'total',
 
@@ -124,6 +129,9 @@ export const defaultSettings: Settings = {
 	keyViewFastForward: 'Shift+Space',
 	keyViewVolumeDown: 'Q',
 	keyViewVolumeUp: 'E',
+	keyViewSpeedDown: 'Alt+q',
+	keyViewSpeedUp: 'Alt+e',
+	keyViewSpeedReset: 'Alt+w',
 	keyViewSeekBack: 'q',
 	keyViewSeekForward: 'e',
 	keyViewSeekTo0: '0',

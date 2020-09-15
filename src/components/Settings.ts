@@ -367,6 +367,23 @@ Set to 0% to never upscale.`,
 			]),
 
 			h('article', null, [
+				h('header', null, 'Adjust speed by'),
+				h('section', null, [
+					h('input', {
+						type: 'range',
+						min: 0.05,
+						max: 1,
+						step: 0.05,
+						name: 'adjustSpeedBy',
+						value: settings.adjustSpeedBy,
+						onInput: withValue((value) => (settings.adjustSpeedBy = parseFloat(value) || 0.025)),
+					}),
+					' ',
+					h('code', null, `${(settings.adjustSpeedBy * 100).toFixed(1)}%`),
+				]),
+			]),
+
+			h('article', null, [
 				h('header', null, 'Seek by'),
 				h('section', null, [
 					h('input', {
@@ -505,6 +522,9 @@ Set to 0% to never upscale.`,
 			['keyViewFastForward', 'Fast forward'],
 			['keyViewVolumeDown', 'Volume down'],
 			['keyViewVolumeUp', 'Volume up'],
+			['keyViewSpeedDown', 'Speed down'],
+			['keyViewSpeedUp', 'Speed up'],
+			['keyViewSpeedReset', 'Speed reset'],
 			['keyViewSeekBack', 'Seek back'],
 			['keyViewSeekForward', 'Seek forward'],
 			['keyViewSeekTo0', 'Seek to 0%'],
