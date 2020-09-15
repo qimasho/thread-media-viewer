@@ -145,6 +145,20 @@ export function MediaVideo({
 		const video = videoRef.current;
 		if (video) video.currentTime = min(video.currentTime + settings.seekBy, video.duration);
 	});
+	useKey(settings.keyViewTinySeekBack, () => {
+		const video = videoRef.current;
+		if (video) {
+			video.pause();
+			video.currentTime = max(video.currentTime - settings.tinySeekBy, 0);
+		}
+	});
+	useKey(settings.keyViewTinySeekForward, () => {
+		const video = videoRef.current;
+		if (video) {
+			video.pause();
+			video.currentTime = min(video.currentTime + settings.tinySeekBy, video.duration);
+		}
+	});
 	useKey(settings.keyViewVolumeDown, () => {
 		settings.volume = max(settings.volume - settings.adjustVolumeBy, 0);
 		flashVolume();

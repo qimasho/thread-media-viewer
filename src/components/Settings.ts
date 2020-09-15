@@ -401,6 +401,23 @@ Set to 0% to never upscale.`,
 			]),
 
 			h('article', null, [
+				h('header', null, 'Tiny seek by'),
+				h('section', null, [
+					h('input', {
+						type: 'range',
+						min: 0.001,
+						max: 1,
+						step: 0.001,
+						name: 'tinySeekBy',
+						value: settings.tinySeekBy,
+						onInput: withValue((value) => (settings.tinySeekBy = parseFloat(value) || 0.03)),
+					}),
+					' ',
+					h('code', null, `${round(settings.tinySeekBy * 1000)} ms`),
+				]),
+			]),
+
+			h('article', null, [
 				h('header', null, 'End time format'),
 				h('section', null, [
 					h('label', null, [
@@ -527,6 +544,8 @@ Set to 0% to never upscale.`,
 			['keyViewSpeedReset', 'Speed reset'],
 			['keyViewSeekBack', 'Seek back'],
 			['keyViewSeekForward', 'Seek forward'],
+			['keyViewTinySeekBack', 'Tiny seek back'],
+			['keyViewTinySeekForward', 'Tiny seek forward'],
 			['keyViewSeekTo0', 'Seek to 0%'],
 			['keyViewSeekTo10', 'Seek to 10%'],
 			['keyViewSeekTo20', 'Seek to 20%'],
