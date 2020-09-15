@@ -16,6 +16,7 @@ export type Settings = {
 	adjustVolumeBy: number, // 0-1
 	adjustSpeedBy: number, // 0-1
 	seekBy: number, // seconds
+	tinySeekBy: number, // seconds 0-1
 	endTimeFormat: 'total' | 'remaining',
 
 	// Full page mode
@@ -59,6 +60,8 @@ export type Settings = {
 	keyViewSpeedReset: string | null,
 	keyViewSeekBack: string | null,
 	keyViewSeekForward: string | null,
+	keyViewTinySeekBack: string | null,
+	keyViewTinySeekForward: string | null,
 	keyViewSeekTo0: string | null,
 	keyViewSeekTo10: string | null,
 	keyViewSeekTo20: string | null,
@@ -91,6 +94,7 @@ export const defaultSettings: Settings = {
 	adjustVolumeBy: 0.125,
 	adjustSpeedBy: 0.5,
 	seekBy: 5,
+	tinySeekBy: 0.033,
 	endTimeFormat: 'total',
 
 	// Full page mode
@@ -134,6 +138,8 @@ export const defaultSettings: Settings = {
 	keyViewSpeedReset: 'Alt+w',
 	keyViewSeekBack: 'q',
 	keyViewSeekForward: 'e',
+	keyViewTinySeekBack: 'Alt+a',
+	keyViewTinySeekForward: 'Alt+d',
 	keyViewSeekTo0: '0',
 	keyViewSeekTo10: '1',
 	keyViewSeekTo20: '2',
