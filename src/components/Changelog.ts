@@ -16,6 +16,16 @@ export function Changelog() {
 	return h('div', {class: ns('Changelog')}, [
 		h('h1', null, 'Changelog'),
 
+		TITLE('2.2.0', '2020.09.15'),
+		h('ul', null, [
+			h('li', null, 'Added shortcuts to adjust video speed and setting for the adjustment amount.'),
+			h(
+				'li',
+				null,
+				`Added shortcuts for tiny video seeking by configurable amount of milliseconds. This is a poor man's frame step in an environment where we don't know video framerate.`
+			),
+		]),
+
 		TITLE('2.1.2', '2020.09.14'),
 		h('ul', null, [
 			h('li', null, 'Style tweaks.'),
