@@ -18,6 +18,8 @@ Toggle the list by pressing `` ` `` (backtick, right below Escape button). Setti
 
 ## Features highlight
 
+*All shortcuts are configurable.*
+
 ### Viewer:
 - Click any thumbnail (in a list or thread) to open viewer (`shift+click` to also open media list).
 - Fixed to the top right so you can browse while watching.
