@@ -28,6 +28,8 @@ Toggle the list by pressing `` ` `` (backtick, right below Escape button). Setti
 - Change volume with `Q/E`.
 - Volume and all settings are remembered and synchronized between all tabs.
 - `space` to pause, hold `shift+space` to fast forward.
+- `Alt+q/e` to control playback speed.
+- `Alt+a/d` to frame step.
 - `mouse wheel` on video to change volume.
 - `mouse wheel` on timeline to seek.
 - Right mouse button gesture down to close media view (hold, drag down, release).
