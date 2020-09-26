@@ -280,9 +280,10 @@ function VideoTimeline({videoRef}: RenderableProps<VideoTimelineProps>) {
 			}, 100);
 
 			const unbind = () => {
-				if (!wasPaused) video.play();
 				window.removeEventListener('mousemove', pointerTimelineSeek);
 				window.removeEventListener('mouseup', unbind);
+				pointerTimelineSeek.flush();
+				if (!wasPaused) video.play();
 			};
 
 			window.addEventListener('mousemove', pointerTimelineSeek);
