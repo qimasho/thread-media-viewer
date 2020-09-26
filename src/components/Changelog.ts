@@ -16,6 +16,11 @@ export function Changelog() {
 	return h('div', {class: ns('Changelog')}, [
 		h('h1', null, 'Changelog'),
 
+		TITLE('2.2.1', '2020.09.26'),
+		h('ul', null, [
+			h('li', null, 'Fixed dragging timeline sometimes not resuming video properly.'),
+		]),
+
 		TITLE('2.2.0', '2020.09.15'),
 		h('ul', null, [
 			h('li', null, 'Added shortcuts to adjust video speed and setting for the adjustment amount.'),
