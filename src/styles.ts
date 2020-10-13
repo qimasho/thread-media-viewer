@@ -62,6 +62,7 @@ const baseStyles = `
 	width: 8em;
 	font-family: "Lucida Console", Monaco, monospace;
 	color: #222;
+	background: #ddd;
 }
 .${ns('CONTAINER')} input[type=text].small { width: 4em; }
 .${ns('CONTAINER')} input[type=text].large { width: 12em; }
