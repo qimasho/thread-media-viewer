@@ -386,6 +386,7 @@ MediaList.styles = `
 	display: flex;
 	justify-content: center;
 	flex-wrap: wrap-reverse;
+	pointer-events: none;
 }
 .${ns('MediaList')} > .${ns('list')} > .${ns('item')} > .${ns('replies')} > span {
 	display: block;
