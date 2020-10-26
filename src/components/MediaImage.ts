@@ -1,5 +1,5 @@
 import {h, RenderableProps, useRef, useLayoutEffect, useState} from 'lib/preact';
-import {ns} from 'lib/utils';
+import {ns, prevented} from 'lib/utils';
 import {useElementSize} from 'lib/hooks';
 import {ErrorBox} from 'components/ErrorBox';
 import {Spinner} from 'components/Spinner';
@@ -9,6 +9,8 @@ interface MediaImageProps {
 	upscale?: boolean;
 	upscaleThreshold?: number;
 	upscaleLimit?: number;
+	isExpanded?: boolean;
+	onExpand?: () => void;
 }
 
 interface ZoomPan {
@@ -23,6 +25,8 @@ export function MediaImage({
 	upscale = false,
 	upscaleThreshold = 0,
 	upscaleLimit = 2,
+	isExpanded,
+	onExpand,
 }: RenderableProps<MediaImageProps>) {
 	const containerRef = useRef<HTMLElement>(null);
 	const imageRef = useRef<HTMLImageElement>(null);
@@ -163,7 +167,18 @@ export function MediaImage({
 			onMouseDown: handleMouseDown,
 			onError: () => setError(new Error('Image failed to load')),
 			src: url,
-		})
+		}),
+		h('div', {class: ns('controls')}, [
+			h(
+				'button',
+				{
+					onMouseDown: prevented<MouseEvent>((event) => event.button === 0 && onExpand?.()),
+					class: isExpanded ? ns('active') : undefined,
+				},
+				'⛶'
+			),
+			h('span', {class: ns('spacer')}),
+		])
 	);
 }
 

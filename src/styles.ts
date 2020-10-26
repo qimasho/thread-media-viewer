@@ -55,6 +55,7 @@ const baseStyles = `
 	height: 1.6em;
 	font-size: inherit;
 	border-radius: 2px;
+	filter: none;
 }
 .${ns('CONTAINER')} input:focus { box-shadow: 0 0 0 3px #fff2; }
 .${ns('CONTAINER')} input[type=text] {

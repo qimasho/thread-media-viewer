@@ -1,5 +1,5 @@
 import {h, Ref, RenderableProps, useRef, useLayoutEffect, useEffect, useState, useMemo} from 'lib/preact';
-import {ns, formatSeconds, getBoundingDocumentRect, throttle, isOfType} from 'lib/utils';
+import {ns, formatSeconds, getBoundingDocumentRect, throttle, prevented} from 'lib/utils';
 import {useKey, useKeyUp, useElementSize} from 'lib/hooks';
 import {useSettings} from 'settings';
 import {ErrorBox} from 'components/ErrorBox';
@@ -10,6 +10,8 @@ interface MediaVideoProps {
 	upscale?: boolean;
 	upscaleThreshold?: number;
 	upscaleLimit?: number;
+	isExpanded?: boolean;
+	onExpand?: () => void;
 }
 
 const {min, max, round} = Math;
@@ -19,6 +21,8 @@ export function MediaVideo({
 	upscale = false,
 	upscaleThreshold = 0.5,
 	upscaleLimit = 2,
+	isExpanded,
+	onExpand,
 }: RenderableProps<MediaVideoProps>) {
 	const settings = useSettings();
 	const containerRef = useRef<HTMLElement>(null);
@@ -216,6 +220,43 @@ export function MediaVideo({
 				src: url,
 			}),
 			h(VideoTimeline, {videoRef}),
+			h('div', {class: ns('controls')}, [
+				h(
+					'button',
+					{
+						onMouseDown: prevented<MouseEvent>((event) => event.button === 0 && onExpand?.()),
+						class: isExpanded ? ns('active') : undefined,
+					},
+					'⛶'
+				),
+				h('span', {class: ns('spacer')}),
+				h(
+					'button',
+					{
+						onMouseDown: prevented<MouseEvent>((event) => event.button === 0 && setSpeed(1)),
+						class: speed === 1 ? ns('active') : undefined,
+					},
+					'1x'
+				),
+				h(
+					'button',
+					{
+						onMouseDown: prevented<MouseEvent>((event) => event.button === 0 && setSpeed(1.5)),
+						class: speed === 1.5 ? ns('active') : undefined,
+					},
+					'1.5x'
+				),
+				h(
+					'button',
+					{
+						onMouseDown: prevented<MouseEvent>((event) => event.button === 0 && setSpeed(2)),
+						class: speed === 2 ? ns('active') : undefined,
+					},
+					'2x'
+				),
+				h('span', {class: ns('spacer')}),
+				h('span', {class: ns('symmetry-dummy')}),
+			]),
 			h(
 				'div',
 				{
@@ -229,7 +270,7 @@ export function MediaVideo({
 					style: `height: ${Number(settings.volume) * 100}%`,
 				})
 			),
-			speed !== 1 && h('div', {class: ns('speed')}, `${speed.toFixed(2)}x`)
+			speed !== 1 && h('div', {class: ns('speed')}, `${speed.toFixed(2)}x`),
 		]
 	);
 }
@@ -393,6 +434,9 @@ MediaVideo.styles = `
 	min-height: 200px;
 	opacity: 0;
 }
+.${ns('MediaView')} .${ns('MediaVideo')} > .${ns('controls')} {
+	bottom: var(--timeline-max-size);
+}
 .${ns('MediaVideo')} > .${ns('timeline')} {
 	position: absolute;
 	left: 0; bottom: 0;
@@ -406,8 +450,7 @@ MediaVideo.styles = `
 	transition: height 100ms ease-out;
 	user-select: none;
 }
-.${ns('MediaVideo')}:not(:hover) > .${ns('timeline')},
-.${ns('MediaVideo')}.${ns('zoomed')} > .${ns('timeline')} {
+.${ns('MediaVideo')}:not(:hover) > .${ns('timeline')} {
 	height: var(--timeline-min-size);
 }
 .${ns('MediaVideo')} > .${ns('timeline')} > .${ns('buffered-range')} {
