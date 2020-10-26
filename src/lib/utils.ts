@@ -199,3 +199,14 @@ export function keyEventId(event: KeyboardEvent) {
 	if (key !== 'Alt' && key !== 'Ctrl' && key !== 'Shift') id += (id.length > 0 ? '+' : '') + key;
 	return id;
 }
+
+/**
+ * Creates event handler that automatically prevents default action and propagation.
+ */
+export function prevented<E extends Event>(callback: (event: E) => void) {
+	return function (event: E) {
+		event.preventDefault();
+		event.stopPropagation();
+		callback(event);
+	}
+}

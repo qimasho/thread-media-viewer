@@ -54,6 +54,8 @@ export function MediaView({media: {url, isVideo}}: RenderableProps<MediaViewProp
 					upscale: isExpanded || isFullScreen,
 					upscaleThreshold: settings.fpmVideoUpscaleThreshold,
 					upscaleLimit: settings.fpmVideoUpscaleLimit,
+					isExpanded,
+					onExpand: () => setIsExpanded((isExpanded) => !isExpanded),
 			  })
 			: h(MediaImage, {
 					key: url,
@@ -61,6 +63,8 @@ export function MediaView({media: {url, isVideo}}: RenderableProps<MediaViewProp
 					upscale: isExpanded || isFullScreen,
 					upscaleThreshold: settings.fpmImageUpscaleThreshold,
 					upscaleLimit: settings.fpmImageUpscaleLimit,
+					isExpanded,
+					onExpand: () => setIsExpanded((isExpanded) => !isExpanded),
 			  })
 	);
 }
@@ -90,4 +94,44 @@ MediaView.styles = `
 	z-index: 1000;
 }
 .${ns('MediaView')} > .${ns('ErrorBox')} { min-height: 200px; }
+.${ns('MediaView')} .${ns('controls')} {
+	display: flex;
+	gap: 2px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	padding: 0 5px 5px;
+	transition: all 100ms linear;
+}
+.${ns('MediaView')}:not(:hover) .${ns('controls')} {
+	opacity: 0;
+}
+.${ns('MediaView')} .${ns('controls')} > .${ns('spacer')} { flex: 1; opacity: 0; }
+.${ns('MediaView')} .${ns('controls')} > .${ns('spacer')}::after { content: 'm'; }
+.${ns('MediaView')} .${ns('controls')} > button,
+.${ns('MediaView')} .${ns('controls')} > .${ns('symmetry-dummy')} {
+	display: block;
+	height: 24px;
+	margin: 0;
+	padding: 0 6px;
+	border: 0;
+}
+.${ns('MediaView')} .${ns('controls')} > button {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+	flex: 0 0 auto;
+	color: #fff;
+	background: #8882;
+	border-radius: 2px;
+	font-size: 14px;
+	text-shadow: 1px 1px 0 #000d, -1px -1px 0 #000d, -1px 1px 0 #000d, 1px -1px 0 #000d;
+}
+.${ns('MediaView')} .${ns('controls')} > button:hover,
+.${ns('MediaView')} .${ns('controls')} > button.${ns('active')} {
+	color: #111;
+	background: #eee;
+	text-shadow: none;
+}
 `;
