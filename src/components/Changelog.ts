@@ -16,6 +16,15 @@ export function Changelog() {
 	return h('div', {class: ns('Changelog')}, [
 		h('h1', null, 'Changelog'),
 
+		TITLE('2.4.0', '2020.11.05'),
+		h('ul', null, [
+			h('li', null, [
+				`Settings are now saved in script's greasemonkey storage instead of website's localStorage. This makes settings persist between all websites the script runs on.`,
+				h('br', {}),
+				`Your old settings should migrate automatically, in a weird case they don't - sorry for the inconvenience.`
+			]),
+		]),
+
 		TITLE('2.3.0', '2020.10.26'),
 		h('ul', null, [
 			h('li', null, 'Added viewer control buttons (fullpage toggle and speed).'),

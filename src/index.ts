@@ -15,8 +15,16 @@ import 'styles';
 const serializer = SERIALIZERS.find((serializer) => serializer.urlMatches.exec(location.host + location.pathname));
 
 if (serializer) {
+	// Try migrating user's settings from old localStorage to greasemonkey storage
+	let migratedDefaultSettings: Settings;
+	try {
+		migratedDefaultSettings = {...defaultSettings, ...JSON.parse(localStorage.getItem(ns('settings')) as any)};
+	} catch {
+		migratedDefaultSettings = defaultSettings;
+	}
+
 	const {threadSerializer, catalogSerializer} = serializer;
-	const settings = syncedSettings<Settings>(ns('settings'), defaultSettings);
+	const settings = syncedSettings<Settings>('settings', migratedDefaultSettings);
 	let mediaWatcher: MediaWatcher | null = null;
 	let catalogWatcher: CatalogWatcher | null = null;
 
