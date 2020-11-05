@@ -123,7 +123,7 @@ MediaView.styles = `
 	text-align: center;
 	flex: 0 0 auto;
 	color: #fff;
-	background: #8882;
+	background: #222b;
 	border-radius: 2px;
 	font-size: 14px;
 	text-shadow: 1px 1px 0 #000d, -1px -1px 0 #000d, -1px 1px 0 #000d, 1px -1px 0 #000d;
