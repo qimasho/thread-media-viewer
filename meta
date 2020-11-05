@@ -10,6 +10,10 @@
 // @match       https://thebarchive.com/*
 // @require     https://cdn.jsdelivr.net/npm/preact@10.4.6/dist/preact.min.js
 // @require     https://cdn.jsdelivr.net/npm/preact@10.4.6/hooks/dist/hooks.umd.js
+// @grant       GM_getValue
+// @grant       GM_setValue
+// @grant       GM_addValueChangeListener
+// @grant       GM_removeValueChangeListener
 // @grant       GM_addStyle
 // @grant       GM_openInTab
 // @license     MIT
