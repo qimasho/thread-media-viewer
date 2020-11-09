@@ -178,11 +178,12 @@ export function MediaVideo({
 	useKey(settings.keyViewSpeedReset, () => setSpeed(1));
 	useKey(settings.keyViewFastForward, (event) => {
 		if (event.repeat) return;
-		if (settings.fastForwardActivation === 'hold') setIsFastForward(true);
-		else setIsFastForward((value) => !value);
-	});
-	useKeyUp(settings.keyViewFastForward, () => {
-		if (settings.fastForwardActivation === 'hold') setIsFastForward(false);
+		if (settings.fastForwardActivation === 'hold') {
+			setIsFastForward(true);
+			window.addEventListener('keyup', () => setIsFastForward(false), {once: true});
+		} else {
+			setIsFastForward((value) => !value);
+		}
 	});
 
 	// Time navigation by numbers, 1=10%, 5=50%, ... 0=0%

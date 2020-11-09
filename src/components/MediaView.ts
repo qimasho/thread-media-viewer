@@ -34,11 +34,12 @@ export function MediaView({media: {url, isVideo}}: RenderableProps<MediaViewProp
 	useKey(settings.keyViewFullPage, (event) => {
 		event.preventDefault();
 		if (event.repeat) return;
-		if (settings.fpmActivation === 'hold') setIsExpanded(true);
-		else setIsExpanded((value) => !value);
-	});
-	useKeyUp(settings.keyViewFullPage, () => {
-		if (settings.fpmActivation === 'hold') setIsExpanded(false);
+		if (settings.fastForwardActivation === 'hold') {
+			setIsExpanded(true);
+			window.addEventListener('keyup', () => setIsExpanded(false), {once: true});
+		} else {
+			setIsExpanded((value) => !value);
+		}
 	});
 
 	let classNames = ns('MediaView');
