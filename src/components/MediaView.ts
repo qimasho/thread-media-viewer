@@ -34,7 +34,7 @@ export function MediaView({media: {url, isVideo}}: RenderableProps<MediaViewProp
 	useKey(settings.keyViewFullPage, (event) => {
 		event.preventDefault();
 		if (event.repeat) return;
-		if (settings.fastForwardActivation === 'hold') {
+		if (settings.fpmActivation === 'hold') {
 			setIsExpanded(true);
 			window.addEventListener('keyup', () => setIsExpanded(false), {once: true});
 		} else {
