@@ -1,6 +1,6 @@
 import {h, RenderableProps, useRef, useState} from 'lib/preact';
-import {ns} from 'lib/utils';
-import {useKey, useKeyUp} from 'lib/hooks';
+import {ns, isOfType, prevented} from 'lib/utils';
+import {useKey} from 'lib/hooks';
 import {Media} from 'lib/mediaWatcher';
 import {useSettings} from 'settings';
 import {MediaImage} from 'components/MediaImage';
@@ -8,15 +8,16 @@ import {MediaVideo} from 'components/MediaVideo';
 
 interface MediaViewProps {
 	media: Media;
+	onClose: () => void;
 }
 
-export function MediaView({media: {url, isVideo}}: RenderableProps<MediaViewProps>) {
+export function MediaView({media: {url, isVideo}, onClose}: RenderableProps<MediaViewProps>) {
 	const settings = useSettings();
 	const containerRef = useRef<HTMLElement>(null);
 	const [isExpanded, setIsExpanded] = useState<boolean>(false);
 	const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
 
-	const toggleFullscreen = () => {
+	function toggleFullscreen() {
 		if (containerRef.current) {
 			if (!document.fullscreenElement) {
 				setIsFullScreen(true);
@@ -28,8 +29,17 @@ export function MediaView({media: {url, isVideo}}: RenderableProps<MediaViewProp
 				document.exitFullscreen();
 			}
 		}
-	};
+	}
 
+	function handleDblClick(event: MouseEvent) {
+		// Filter out clicks on buttons
+		const target = event.target;
+		if (!isOfType<HTMLElement>(target, target != null && 'closest' in target)) return;
+		if (target.closest('button') != null) return;
+		toggleFullscreen();
+	}
+
+	useKey(settings.keyViewClose, onClose);
 	useKey(settings.keyViewFullScreen, toggleFullscreen);
 	useKey(settings.keyViewFullPage, (event) => {
 		event.preventDefault();
@@ -45,9 +55,7 @@ export function MediaView({media: {url, isVideo}}: RenderableProps<MediaViewProp
 	let classNames = ns('MediaView');
 	if (isExpanded || isFullScreen) classNames += ` ${ns('-expanded')}`;
 
-	return h(
-		'div',
-		{class: classNames, ref: containerRef, onDblClick: toggleFullscreen},
+	return h('div', {class: classNames, ref: containerRef, onDblClick: handleDblClick}, [
 		isVideo
 			? h(MediaVideo, {
 					key: url,
@@ -55,8 +63,6 @@ export function MediaView({media: {url, isVideo}}: RenderableProps<MediaViewProp
 					upscale: isExpanded || isFullScreen,
 					upscaleThreshold: settings.fpmVideoUpscaleThreshold,
 					upscaleLimit: settings.fpmVideoUpscaleLimit,
-					isExpanded,
-					onExpand: () => setIsExpanded((isExpanded) => !isExpanded),
 			  })
 			: h(MediaImage, {
 					key: url,
@@ -64,10 +70,29 @@ export function MediaView({media: {url, isVideo}}: RenderableProps<MediaViewProp
 					upscale: isExpanded || isFullScreen,
 					upscaleThreshold: settings.fpmImageUpscaleThreshold,
 					upscaleLimit: settings.fpmImageUpscaleLimit,
-					isExpanded,
-					onExpand: () => setIsExpanded((isExpanded) => !isExpanded),
-			  })
-	);
+			  }),
+		h('div', {class: `${ns('controls')} ${ns('-top-right')}`}, [
+			h(
+				'button',
+				{
+					onMouseDown: prevented<MouseEvent>(
+						(event) => event.button === 0 && setIsExpanded((isExpanded) => !isExpanded)
+					),
+					class: isExpanded ? ns('active') : undefined,
+					title: 'Toggle full page mode',
+				},
+				'⛶'
+			),
+			h(
+				'button',
+				{
+					onMouseDown: prevented<MouseEvent>((event) => event.button === 0 && onClose()),
+					title: `Close (mouse gesture down, or ${settings.keyViewClose})`,
+				},
+				'✕'
+			),
+		]),
+	]);
 }
 
 MediaView.styles = `
@@ -99,27 +124,30 @@ MediaView.styles = `
 	display: flex;
 	gap: 2px;
 	position: absolute;
-	bottom: 0;
-	left: 0;
-	width: 100%;
-	padding: 0 5px 5px;
+	width: auto;
+	height: auto;
 	transition: all 100ms linear;
 }
 .${ns('MediaView')}:not(:hover) .${ns('controls')} {
 	opacity: 0;
 }
-.${ns('MediaView')} .${ns('controls')} > .${ns('spacer')} { flex: 1; opacity: 0; }
-.${ns('MediaView')} .${ns('controls')} > .${ns('spacer')}::after { content: 'm'; }
-.${ns('MediaView')} .${ns('controls')} > button,
-.${ns('MediaView')} .${ns('controls')} > .${ns('symmetry-dummy')} {
-	display: block;
+.${ns('MediaView')} .${ns('controls')}.${ns('-bottom-center')} {
+	bottom: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	margin-bottom: 5px;
+}
+.${ns('MediaView')} .${ns('controls')}.${ns('-top-right')} {
+	top: 0;
+	right: 0;
+	margin: 5px 5px 0 0;
+}
+.${ns('MediaView')} .${ns('controls')} > button {
+	display: table-cell;
 	height: 24px;
 	margin: 0;
 	padding: 0 6px;
 	border: 0;
-}
-.${ns('MediaView')} .${ns('controls')} > button {
-	display: table-cell;
 	vertical-align: middle;
 	text-align: center;
 	flex: 0 0 auto;
@@ -129,7 +157,10 @@ MediaView.styles = `
 	font-size: 14px;
 	text-shadow: 1px 1px 0 #000d, -1px -1px 0 #000d, -1px 1px 0 #000d, 1px -1px 0 #000d;
 }
-.${ns('MediaView')} .${ns('controls')} > button:hover,
+.${ns('MediaView')} .${ns('controls')} > button:hover {
+	color: #fff;
+	background: #666b;
+}
 .${ns('MediaView')} .${ns('controls')} > button.${ns('active')} {
 	color: #111;
 	background: #eee;
