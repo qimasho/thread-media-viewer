@@ -16,6 +16,15 @@ export function Changelog() {
 	return h('div', {class: ns('Changelog')}, [
 		h('h1', null, 'Changelog'),
 
+		TITLE('2.5.0', '2021.01.13'),
+		h('ul', null, [
+			h('li', null, [
+				`Re-arranged media view control buttons.`,
+				`Added a button to close media view for people that miss the existence of mouse gesture and shortcut.`,
+				`Some styling and UX tweaks/improvements.`,
+			]),
+		]),
+
 		TITLE('2.4.0', '2020.11.05'),
 		h('ul', null, [
 			h('li', null, [
