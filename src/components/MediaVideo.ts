@@ -1,6 +1,6 @@
 import {h, Ref, RenderableProps, useRef, useLayoutEffect, useEffect, useState, useMemo} from 'lib/preact';
 import {ns, formatSeconds, getBoundingDocumentRect, throttle, prevented} from 'lib/utils';
-import {useKey, useKeyUp, useElementSize} from 'lib/hooks';
+import {useKey, useElementSize} from 'lib/hooks';
 import {useSettings} from 'settings';
 import {ErrorBox} from 'components/ErrorBox';
 import {Spinner} from 'components/Spinner';
@@ -10,8 +10,6 @@ interface MediaVideoProps {
 	upscale?: boolean;
 	upscaleThreshold?: number;
 	upscaleLimit?: number;
-	isExpanded?: boolean;
-	onExpand?: () => void;
 }
 
 const {min, max, round} = Math;
@@ -21,8 +19,6 @@ export function MediaVideo({
 	upscale = false,
 	upscaleThreshold = 0.5,
 	upscaleLimit = 2,
-	isExpanded,
-	onExpand,
 }: RenderableProps<MediaVideoProps>) {
 	const settings = useSettings();
 	const containerRef = useRef<HTMLElement>(null);
@@ -202,7 +198,7 @@ export function MediaVideo({
 	return h(
 		'div',
 		{
-			class: ns('MediaVideo'),
+			class: classNames,
 			ref: containerRef,
 			onMouseDown: ({button}: MouseEvent) => button === 0 && playPause(),
 			onWheel: handleContainerWheel,
@@ -221,16 +217,7 @@ export function MediaVideo({
 				src: url,
 			}),
 			h(VideoTimeline, {videoRef}),
-			h('div', {class: ns('controls')}, [
-				h(
-					'button',
-					{
-						onMouseDown: prevented<MouseEvent>((event) => event.button === 0 && onExpand?.()),
-						class: isExpanded ? ns('active') : undefined,
-					},
-					'⛶'
-				),
-				h('span', {class: ns('spacer')}),
+			h('div', {class: `${ns('controls')} ${ns('-bottom-center')}`}, [
 				h(
 					'button',
 					{
@@ -255,8 +242,6 @@ export function MediaVideo({
 					},
 					'2x'
 				),
-				h('span', {class: ns('spacer')}),
-				h('span', {class: ns('symmetry-dummy')}),
 			]),
 			h(
 				'div',
@@ -435,7 +420,7 @@ MediaVideo.styles = `
 	min-height: 200px;
 	opacity: 0;
 }
-.${ns('MediaView')} .${ns('MediaVideo')} > .${ns('controls')} {
+.${ns('MediaView')} .${ns('MediaVideo')} > .${ns('controls')}.${ns('-bottom-center')} {
 	bottom: var(--timeline-max-size);
 }
 .${ns('MediaVideo')} > .${ns('timeline')} {

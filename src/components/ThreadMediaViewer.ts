@@ -45,7 +45,7 @@ export function ThreadMediaViewer({settings, watcher}: RenderableProps<ThreadMed
 			container.style.setProperty('--media-list-width', `${cappedListWidth}px`);
 
 			// Calculate an item height to achieve around 1:1 item size ratio. CSS sux.
-			const itemHeight = round((cappedListWidth - 10 /*~scrollbar*/) / settings.mediaListItemsPerRow);
+			const itemHeight = round((cappedListWidth - 10) /*~scrollbar*/ / settings.mediaListItemsPerRow);
 			container.style.setProperty('--media-list-item-height', `${itemHeight}px`);
 
 			// Media list height, set as rounded vh unit
@@ -88,6 +88,7 @@ export function ThreadMediaViewer({settings, watcher}: RenderableProps<ThreadMed
 	}, []);
 
 	const closeSideView = () => setSideView(null);
+	const closeMediaView = () => setActiveIndex(null);
 
 	function toggleList() {
 		setIsOpen((isOpen) => {
@@ -102,11 +103,10 @@ export function ThreadMediaViewer({settings, watcher}: RenderableProps<ThreadMed
 
 	// Shortcuts
 	useKey(settings.keyToggleUI, toggleList);
-	useKey(settings.keyViewClose, () => setActiveIndex(null));
 
 	// Mouse gestures
 	useGesture('up', toggleList);
-	useGesture('down', () => setActiveIndex(null));
+	useGesture('down', closeMediaView);
 
 	let SideViewContent: FunctionComponent | undefined;
 	if (sideView === 'help') SideViewContent = Help;
@@ -126,7 +126,9 @@ export function ThreadMediaViewer({settings, watcher}: RenderableProps<ThreadMed
 					onOpenSideView,
 				}),
 			SideViewContent != null && h(SideView, {key: sideView, onClose: closeSideView}, h(SideViewContent, null)),
-			activeIndex != null && watcher.media[activeIndex] && h(MediaView, {media: watcher.media[activeIndex]}),
+			activeIndex != null &&
+				watcher.media[activeIndex] &&
+				h(MediaView, {media: watcher.media[activeIndex], onClose: closeMediaView}),
 		])
 	);
 }
