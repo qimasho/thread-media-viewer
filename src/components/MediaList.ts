@@ -107,11 +107,6 @@ export function MediaList({
 		window.addEventListener('mousemove', handleMouseMove);
 	}
 
-	// If activeIndex changes externally, make sure selectedIndex matches it
-	useEffect(() => {
-		if (activeIndex != null && activeIndex != selectedIndex) selectAndScrollTo(activeIndex);
-	}, [activeIndex]);
-
 	// Scroll to selected item when list opens
 	useEffect(() => {
 		if (selectedIndex != null) scrollToItem(selectedIndex, 'auto');
