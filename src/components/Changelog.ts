@@ -16,13 +16,24 @@ export function Changelog() {
 	return h('div', {class: ns('Changelog')}, [
 		h('h1', null, 'Changelog'),
 
+		TITLE('2.6.0', '2021.02.12'),
+		h('ul', null, [
+			h(
+				'li',
+				null,
+				`Clicking on media in a thread will no longer scroll the media list box when it's open. I don't recall a single time this behavior was useful, but almost always annoying, making me loose scroll position in the list box, so... removed.`
+			),
+		]),
+
 		TITLE('2.5.0', '2021.01.13'),
 		h('ul', null, [
-			h('li', null, [
-				`Re-arranged media view control buttons.`,
-				`Added a button to close media view for people that miss the existence of mouse gesture and shortcut.`,
-				`Some styling and UX tweaks/improvements.`,
-			]),
+			h('li', null, `Re-arranged media view control buttons.`),
+			h(
+				'li',
+				null,
+				`Added a button to close media view for people that miss the existence of the mouse gesture and shortcut.`
+			),
+			h('li', null, `Some styling and UX tweaks/improvements.`),
 		]),
 
 		TITLE('2.4.0', '2020.11.05'),
@@ -30,19 +41,15 @@ export function Changelog() {
 			h('li', null, [
 				`Settings are now saved in script's greasemonkey storage instead of website's localStorage. This makes settings persist between all websites the script runs on.`,
 				h('br', {}),
-				`Your old settings should migrate automatically, in a weird case they don't - sorry for the inconvenience.`
+				`Your old settings should migrate automatically, in a weird case they don't - sorry for the inconvenience.`,
 			]),
 		]),
 
 		TITLE('2.3.0', '2020.10.26'),
-		h('ul', null, [
-			h('li', null, 'Added viewer control buttons (fullpage toggle and speed).'),
-		]),
+		h('ul', null, [h('li', null, 'Added viewer control buttons (fullpage toggle and speed).')]),
 
 		TITLE('2.2.1', '2020.09.26'),
-		h('ul', null, [
-			h('li', null, 'Fixed dragging timeline sometimes not resuming video properly.'),
-		]),
+		h('ul', null, [h('li', null, 'Fixed dragging timeline sometimes not resuming video properly.')]),
 
 		TITLE('2.2.0', '2020.09.15'),
 		h('ul', null, [
