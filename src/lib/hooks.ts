@@ -1,5 +1,6 @@
 import {useState, useEffect, useLayoutEffect, Ref} from 'lib/preact';
 import {throttle as throttleFn, keyEventId} from 'lib/utils';
+import {observeElementSize} from 'lib/elementSize';
 
 /**
  * Force update current component.
@@ -86,42 +87,28 @@ export function useWindowDimensions() {
  * Sets up element Resize Observer, extracts element sizes, and returns them as
  * a `[number, number]` tuple. Initial call returns `[null, null]`.
  *
- * Note: `padding-box` is potentially slower to retrieve. Don't use it when you
- * don't need to.
+ * Note: uses `observeElementSize` utility, which throttles all dimension
+ * retrieval from all of its consumers to a 1-2 frame interval, and then batches
+ * it all before triggering callbacks (commits). This eliminates layout trashing
+ * to allow fast UI rendering with no stutters and CPU meltdowns when you drag
+ * something. The disadvantage is that initial dimension retrieval is impossible
+ * to get before 1st render. If this is needed, a custom useLayoutEffect solution
+ * is required.
  *
  * ```ts
  * const containerRef = useRef<HTMLElement>();
- * const [width, height] = useElementSize(containerRef, 'content-box');
+ * const [width, height] = useElementSize(containerRef, 'padding-box');
  * ```
  */
 export function useElementSize(
 	ref: Ref<HTMLElement>,
-	box: 'border-box' | 'content-box' | 'padding-box' = 'border-box',
-	throttle: number | false = false
+	box: 'border-box' | 'padding-box' = 'border-box'
 ) {
 	const [sizes, setSizes] = useState<[number, number] | [null, null]>([null, null]);
 
 	useLayoutEffect(() => {
 		if (!ref.current) throw new Error();
-
-		const checker = (entries: ResizeObserverEntry[]) => {
-			let lastEntry = entries[entries.length - 1];
-
-			if (box === 'padding-box') {
-				setSizes([ref.current!.clientWidth, ref.current!.clientHeight]);
-			} else if (box === 'content-box') {
-				setSizes([lastEntry.contentRect.width, lastEntry.contentRect.height]);
-			} else {
-				// border-box
-				setSizes([lastEntry.borderBoxSize.inlineSize, lastEntry.borderBoxSize.blockSize]);
-			}
-		};
-		const check = throttle !== false ? throttleFn(checker, throttle) : checker;
-		const resizeObserver = new ResizeObserver(check);
-
-		resizeObserver.observe(ref.current);
-
-		return () => resizeObserver.disconnect();
+		return observeElementSize(ref.current, setSizes, {box, precheck: true});
 	}, [box]);
 
 	return sizes;

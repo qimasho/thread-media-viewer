@@ -8,7 +8,7 @@ const {round} = Math;
 export function Settings() {
 	const settings = useSettings();
 	const containerRef = useRef<HTMLElement>(null);
-	const [containerWidth] = useElementSize(containerRef, 'content-box', 100);
+	const [containerWidth] = useElementSize(containerRef, 'padding-box');
 
 	// Binding shortcuts
 	function handleShortcutsKeyDown(event: KeyboardEvent) {
