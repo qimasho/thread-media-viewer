@@ -16,6 +16,11 @@ export function Changelog() {
 	return h('div', {class: ns('Changelog')}, [
 		h('h1', null, 'Changelog'),
 
+		TITLE('2.6.2', '2021.03.17'),
+		h('ul', null, [
+			h('li', null, `Fixed glitchy scrolling to the end of the page when navigating down from the last item.`),
+		]),
+
 		TITLE('2.6.0', '2021.02.12'),
 		h('ul', null, [
 			h(
