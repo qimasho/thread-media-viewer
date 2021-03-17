@@ -47,7 +47,7 @@ export function MediaList({media, activeId, sideView, onActivation, onOpenSideVi
 	function scrollToItem(index: number, behavior: 'smooth' | 'auto' = 'smooth') {
 		const targetChild = listRef.current?.children[index];
 		if (isOfType<HTMLElement>(targetChild, targetChild != null)) {
-			scrollToView(targetChild, {block: 'center', behavior});
+			scrollToView(targetChild, {block: 'center', behavior, container: listRef.current});
 		}
 	}
 
@@ -55,6 +55,14 @@ export function MediaList({media, activeId, sideView, onActivation, onOpenSideVi
 		if (media.length > 0 && index >= 0 && index < media.length) {
 			setSelectedIndex(index);
 			scrollToItem(index);
+		}
+	}
+
+	function moveBy(delta: number, activate: boolean = false) {
+		const newIndex = media.length > 0 ? max(0, min(media.length - 1, selectedIndex + delta)) : -1;
+		if (newIndex !== selectedIndex) {
+			selectAndScrollTo(newIndex);
+			if (activate) onActivation(media[newIndex]?.id || null);
 		}
 	}
 
@@ -104,65 +112,41 @@ export function MediaList({media, activeId, sideView, onActivation, onOpenSideVi
 
 	// Scroll to selected item when list opens
 	useEffect(() => {
-		if (selectedIndex != null) scrollToItem(selectedIndex, 'auto');
+		if (selectedIndex != -1) scrollToItem(selectedIndex, 'auto');
 	}, []);
 
 	// Scroll the page to the selected item's parent post
 	useEffect(() => {
-		if (selectedIndex != null && media?.[selectedIndex]?.postContainer && containerRef.current) {
+		if (selectedIndex != -1 && media?.[selectedIndex]?.postContainer && containerRef.current) {
 			let offset = getBoundingDocumentRect(containerRef.current).height;
 			scrollToView(media[selectedIndex].postContainer, {block: round(offset), behavior: 'smooth'});
 		}
 	}, [selectedIndex]);
 
 	// Keyboard navigation
-	const selectUp = () => selectedIndex != null && selectAndScrollTo(max(selectedIndex - itemsPerRow, 0));
+	const selectUp = () => moveBy(-itemsPerRow);
 	const selectDown = () => {
 		// Scroll the whole page to the bottom when `s` is pressed when already at the end of media list.
 		// This allows a comfy way how to clear new posts indicator.
-		if (selectedIndex == media.length - 1) {
+		if (selectedIndex === media.length - 1) {
 			document.scrollingElement?.scrollTo({
 				top: document.scrollingElement.scrollHeight,
 				behavior: 'smooth',
 			});
+		} else {
+			moveBy(itemsPerRow);
 		}
-		if (selectedIndex != null) selectAndScrollTo(min(selectedIndex + itemsPerRow, media.length - 1));
 	};
-	const selectPrev = () => selectedIndex != null && selectAndScrollTo(max(selectedIndex - 1, 0));
-	const selectNext = () => selectedIndex != null && selectAndScrollTo(min(selectedIndex + 1, media.length - 1));
-	const selectPageBack = () => selectedIndex != null && selectAndScrollTo(max(selectedIndex - itemsPerRow * 3, 0));
-	const selectPageForward = () =>
-		selectedIndex != null && selectAndScrollTo(min(selectedIndex + itemsPerRow * 3, media.length));
+	const selectPrev = () => moveBy(-1);
+	const selectNext = () => moveBy(1);
+	const selectPageBack = () => moveBy(-itemsPerRow * 3);
+	const selectPageForward = () => moveBy(itemsPerRow * 3);
 	const selectFirst = () => selectAndScrollTo(0);
 	const selectLast = () => selectAndScrollTo(media.length - 1);
-	const selectAndViewPrev = () => {
-		if (selectedIndex != null) {
-			const index = max(selectedIndex - 1, 0);
-			selectAndScrollTo(index);
-			onActivation(media[index]?.id || null);
-		}
-	};
-	const selectAndViewNext = () => {
-		if (selectedIndex != null) {
-			const index = min(selectedIndex + 1, media.length - 1);
-			selectAndScrollTo(index);
-			onActivation(media[index]?.id || null);
-		}
-	};
-	const selectAndViewUp = () => {
-		if (selectedIndex != null) {
-			const index = max(selectedIndex - itemsPerRow, 0);
-			selectAndScrollTo(index);
-			onActivation(media[index]?.id || null);
-		}
-	};
-	const selectAndViewDown = () => {
-		if (selectedIndex != null) {
-			const index = min(selectedIndex + itemsPerRow, media.length - 1);
-			selectAndScrollTo(index);
-			onActivation(media[index]?.id || null);
-		}
-	};
+	const selectAndViewPrev = () => moveBy(-1, true);
+	const selectAndViewNext = () => moveBy(1, true);
+	const selectAndViewUp = () => moveBy(-itemsPerRow, true);
+	const selectAndViewDown = () => moveBy(itemsPerRow, true);
 	const toggleViewSelectedItem = () =>
 		onActivation(activeIndex === selectedIndex ? null : media[selectedIndex]?.id || null);
 
