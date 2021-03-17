@@ -3,15 +3,17 @@
   "version": "0.0.0",
   "description": "Development dependencies.",
   "main": "index.js",
-  "dependencies": {},
   "devDependencies": {
     "clipboardy": "^2.3.0",
-    "esbuild": "^0.6.31",
-    "gulp": "^4.0.2"
+    "esbuild": "^0.9.3",
+    "gulp": "^4.0.2",
+    "tslib": "^2.1.0",
+    "typescript": "^4.2.3"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "gulp build"
+    "build": "npx gulp build",
+    "check": "npx tsc -p . --noEmit"
   },
   "author": "",
   "license": "ISC"
