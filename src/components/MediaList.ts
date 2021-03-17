@@ -20,12 +20,12 @@ export function MediaList({media, activeId, sideView, onActivation, onOpenSideVi
 	const containerRef = useRef<HTMLElement>(null);
 	const listRef = useRef<HTMLElement>(null);
 	const activeIndex = media.findIndex(({id}) => id === activeId);
-	let [selectedIndex, setSelectedIndex] = useState<number | null>(activeIndex >= 0 ? activeIndex : null);
+	let [selectedIndex, setSelectedIndex] = useState<number>(activeIndex >= 0 ? activeIndex : -1);
 	const [isDragged, setIsDragged] = useState<boolean>(false);
 	const itemsPerRow = settings.mediaListItemsPerRow;
 
 	// If there is no selected item, select the item closest to the center of the screen
-	if (selectedIndex == null) {
+	if (selectedIndex == -1) {
 		const centerOffset = window.innerHeight / 2;
 		let lastProximity = Infinity;
 		for (let i = 0; i < media.length; i++) {
@@ -40,8 +40,8 @@ export function MediaList({media, activeId, sideView, onActivation, onOpenSideVi
 			lastProximity = proximity;
 		}
 
-		if (selectedIndex == null && media.length > 0) selectedIndex = media.length - 1;
-		if (selectedIndex != null && selectedIndex >= 0) setSelectedIndex(selectedIndex);
+		if (selectedIndex == -1 && media.length > 0) selectedIndex = 0;
+		if (selectedIndex != -1 && selectedIndex >= 0 && selectedIndex < media.length) setSelectedIndex(selectedIndex);
 	}
 
 	function scrollToItem(index: number, behavior: 'smooth' | 'auto' = 'smooth') {
@@ -164,13 +164,7 @@ export function MediaList({media, activeId, sideView, onActivation, onOpenSideVi
 		}
 	};
 	const toggleViewSelectedItem = () =>
-		onActivation(
-			selectedIndex && media[selectedIndex].id === activeId
-				? null
-				: selectedIndex
-				? media[selectedIndex].id
-				: null
-		);
+		onActivation(activeIndex === selectedIndex ? null : media[selectedIndex]?.id || null);
 
 	useKey(settings.keyNavLeft, selectPrev);
 	useKey(settings.keyNavRight, selectNext);
