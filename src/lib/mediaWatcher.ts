@@ -15,7 +15,7 @@ export class MediaWatcher {
 	serializer: ThreadSerializer;
 	container: HTMLElement;
 	listeners: Set<MediaListener> = new Set();
-	mediaByURL: Map<string, Media> = new Map();
+	mediaByID: Map<string, Media> = new Map();
 	media: Media[] = [];
 	observer: MutationObserver;
 
@@ -60,7 +60,7 @@ export class MediaWatcher {
 					replies: serializedPost.replies,
 				};
 
-				let existingItem = this.mediaByURL.get(mediaItem.url);
+				let existingItem = this.mediaByID.get(mediaItem.id);
 
 				// Update existing items (for stuff like reply counts)
 				if (existingItem) {
@@ -71,7 +71,7 @@ export class MediaWatcher {
 					continue;
 				}
 
-				this.mediaByURL.set(mediaItem.url, mediaItem);
+				this.mediaByID.set(mediaItem.id, mediaItem);
 				addedMedia.push(mediaItem);
 				hasNewMedia = true;
 			}

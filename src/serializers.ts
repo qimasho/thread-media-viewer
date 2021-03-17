@@ -12,6 +12,7 @@ export interface ThreadSerializer {
 export type PostSerializer = (post: HTMLElement) => SerializedPost | null | undefined;
 
 export interface SerializedMedia {
+	id: string;
 	url: string;
 	filename: string; // original filename, or fallback to file part of the main url
 	thumbnailUrl: string;
@@ -76,8 +77,12 @@ function fortunePostSerializer(post: HTMLElement) {
 
 	if (!url || !thumbnailUrl || !filename) return null;
 
+	const id = url.split('/').pop();
+
+	if (!id) return null;
+
 	return {
-		media: [{url, thumbnailUrl, filename, size, width, height}],
+		media: [{id, url, thumbnailUrl, filename, size, width, height}],
 		replies: post.querySelectorAll<HTMLAnchorElement>('.postInfo .backlink a.quotelink')?.length ?? 0,
 	};
 }
@@ -94,8 +99,12 @@ function theBArchivePostSerializer(post: HTMLElement) {
 
 	if (!url || !thumbnailUrl || !filename) return null;
 
+	const id = url.split('/').pop();
+
+	if (!id) return null;
+
 	return {
-		media: [{url, size, width, height, thumbnailUrl, filename}],
+		media: [{id, url, size, width, height, thumbnailUrl, filename}],
 		replies: post.querySelectorAll<HTMLAnchorElement>('.backlink_list a.backlink')?.length ?? 0,
 	};
 }
