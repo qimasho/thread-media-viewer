@@ -7,25 +7,20 @@ import {SideNav} from 'components/SideNav';
 
 interface MediaListProps {
 	media: Media[];
-	activeIndex: number | null;
+	activeId: string | null;
 	sideView: string | null;
-	onActivation: StateUpdater<number | null>;
+	onActivation: StateUpdater<string | null>;
 	onOpenSideView: (view: string) => void;
 }
 
 const {max, min, round} = Math;
 
-export function MediaList({
-	media,
-	activeIndex,
-	sideView,
-	onActivation,
-	onOpenSideView,
-}: RenderableProps<MediaListProps>) {
+export function MediaList({media, activeId, sideView, onActivation, onOpenSideView}: RenderableProps<MediaListProps>) {
 	const settings = useSettings();
 	const containerRef = useRef<HTMLElement>(null);
 	const listRef = useRef<HTMLElement>(null);
-	let [selectedIndex, setSelectedIndex] = useState<number | null>(activeIndex);
+	const activeIndex = media.findIndex(({id}) => id === activeId);
+	let [selectedIndex, setSelectedIndex] = useState<number | null>(activeIndex >= 0 ? activeIndex : null);
 	const [isDragged, setIsDragged] = useState<boolean>(false);
 	const itemsPerRow = settings.mediaListItemsPerRow;
 
@@ -142,33 +137,40 @@ export function MediaList({
 	const selectLast = () => selectAndScrollTo(media.length - 1);
 	const selectAndViewPrev = () => {
 		if (selectedIndex != null) {
-			const prevIndex = max(selectedIndex - 1, 0);
-			selectAndScrollTo(prevIndex);
-			onActivation(prevIndex);
+			const index = max(selectedIndex - 1, 0);
+			selectAndScrollTo(index);
+			onActivation(media[index]?.id || null);
 		}
 	};
 	const selectAndViewNext = () => {
 		if (selectedIndex != null) {
-			const nextIndex = min(selectedIndex + 1, media.length - 1);
-			selectAndScrollTo(nextIndex);
-			onActivation(nextIndex);
+			const index = min(selectedIndex + 1, media.length - 1);
+			selectAndScrollTo(index);
+			onActivation(media[index]?.id || null);
 		}
 	};
 	const selectAndViewUp = () => {
 		if (selectedIndex != null) {
 			const index = max(selectedIndex - itemsPerRow, 0);
 			selectAndScrollTo(index);
-			onActivation(index);
+			onActivation(media[index]?.id || null);
 		}
 	};
 	const selectAndViewDown = () => {
 		if (selectedIndex != null) {
 			const index = min(selectedIndex + itemsPerRow, media.length - 1);
 			selectAndScrollTo(index);
-			onActivation(index);
+			onActivation(media[index]?.id || null);
 		}
 	};
-	const toggleViewSelectedItem = () => onActivation(selectedIndex === activeIndex ? null : selectedIndex);
+	const toggleViewSelectedItem = () =>
+		onActivation(
+			selectedIndex && media[selectedIndex].id === activeId
+				? null
+				: selectedIndex
+				? media[selectedIndex].id
+				: null
+		);
 
 	useKey(settings.keyNavLeft, selectPrev);
 	useKey(settings.keyNavRight, selectNext);
@@ -185,17 +187,17 @@ export function MediaList({
 	useKey(settings.keyNavEnd, selectLast);
 
 	function mediaItem(
-		{url, thumbnailUrl, extension, isVideo, isGif, replies, size, width, height}: Media,
+		{id, url, thumbnailUrl, extension, isVideo, isGif, replies, size, width, height}: Media,
 		index: number
 	) {
 		let classNames = ns('item');
 		if (selectedIndex === index) classNames += ` ${ns('-selected')}`;
-		if (activeIndex === index) classNames += ` ${ns('-active')}`;
+		if (activeId === id) classNames += ` ${ns('-active')}`;
 
 		function onClick(event: MouseEvent) {
 			event.preventDefault();
 			setSelectedIndex(index);
-			onActivation(index);
+			onActivation(media[index]?.id || null);
 		}
 
 		let metaStr = size;

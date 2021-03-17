@@ -22,7 +22,7 @@ export function ThreadMediaViewer({settings, watcher}: RenderableProps<ThreadMed
 	const containerRef = useRef<HTMLElement>(null);
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [sideView, setSideView] = useState<string | null>(null);
-	const [activeIndex, setActiveIndex] = useState<number | null>(null);
+	const [activeId, setActiveId] = useState<string | null>(null);
 	const [windowWidth] = useWindowDimensions();
 	const forceUpdate = useForceUpdate();
 
@@ -69,14 +69,15 @@ export function ThreadMediaViewer({settings, watcher}: RenderableProps<ThreadMed
 
 			const url = target?.closest('a')?.href;
 
-			if (url && watcher.mediaByURL.has(url)) {
-				const mediaIndex = watcher.media.findIndex((media) => media.url === url);
-				if (mediaIndex != null) {
-					event.stopPropagation();
-					event.preventDefault();
-					setActiveIndex(mediaIndex);
-					if (event.shiftKey) setIsOpen(true);
-				}
+			if (!url) return;
+
+			const item = watcher.media.find((media) => media.url === url);
+
+			if (item) {
+				event.stopPropagation();
+				event.preventDefault();
+				setActiveId(item.id);
+				if (event.shiftKey) setIsOpen(true);
 			}
 		}
 
@@ -88,7 +89,7 @@ export function ThreadMediaViewer({settings, watcher}: RenderableProps<ThreadMed
 	}, []);
 
 	const closeSideView = () => setSideView(null);
-	const closeMediaView = () => setActiveIndex(null);
+	const closeMediaView = () => setActiveId(null);
 
 	function toggleList() {
 		setIsOpen((isOpen) => {
@@ -113,6 +114,8 @@ export function ThreadMediaViewer({settings, watcher}: RenderableProps<ThreadMed
 	if (sideView === 'settings') SideViewContent = SettingsComponent;
 	if (sideView === 'changelog') SideViewContent = Changelog;
 
+	const activeItem = activeId ? watcher.mediaByID.get(activeId) : null;
+
 	return h(
 		SettingsProvider,
 		{value: settings},
@@ -120,15 +123,13 @@ export function ThreadMediaViewer({settings, watcher}: RenderableProps<ThreadMed
 			isOpen &&
 				h(MediaList, {
 					media: watcher.media,
-					activeIndex,
+					activeId,
 					sideView,
-					onActivation: setActiveIndex,
+					onActivation: setActiveId,
 					onOpenSideView,
 				}),
 			SideViewContent != null && h(SideView, {key: sideView, onClose: closeSideView}, h(SideViewContent, null)),
-			activeIndex != null &&
-				watcher.media[activeIndex] &&
-				h(MediaView, {media: watcher.media[activeIndex], onClose: closeMediaView}),
+			activeItem && h(MediaView, {media: activeItem, onClose: closeMediaView}),
 		])
 	);
 }
