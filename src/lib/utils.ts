@@ -64,13 +64,6 @@ export function getBoundingDocumentRect(element: HTMLElement) {
 	};
 }
 
-export function scrollToElement(element: HTMLElement, offset = 0, smooth = true) {
-	document.scrollingElement?.scrollTo({
-		top: getBoundingDocumentRect(element).top - offset,
-		behavior: smooth ? 'smooth' : 'auto',
-	});
-}
-
 /**
  * Because native `element.scrollIntoView()` is broken in Chrome.
  * I'm having SO MUCH FUN PATCHING STUPID FUCKING DOM BUGS!
@@ -81,18 +74,26 @@ export function scrollToView(
 	{
 		block = 'start',
 		behavior = 'auto',
-	}: {block?: 'start' | 'center' | 'end' | number; behavior?: 'auto' | 'smooth'} = {}
+		container: forcedContainer,
+	}: {block?: 'start' | 'center' | 'end' | number; behavior?: 'auto' | 'smooth'; container?: HTMLElement | null} = {}
 ): void {
 	if (!document.body.contains(element)) return;
 
-	let container = element.parentElement;
+	let container: HTMLElement | undefined | null;
 
-	while (container) {
-		if (isScrollableY(container)) break;
-		else container = container.parentElement;
+	if (forcedContainer) {
+		if (!isScrollableY(forcedContainer)) return;
+		container = forcedContainer;
+	} else {
+		container = element.parentElement;
+
+		while (container) {
+			if (isScrollableY(container)) break;
+			else container = container.parentElement;
+		}
+
+		if (!container) return;
 	}
-
-	if (!container) return;
 
 	const containerRect = getBoundingDocumentRect(container);
 	const elementRect = getBoundingDocumentRect(element);
@@ -208,5 +209,5 @@ export function prevented<E extends Event>(callback: (event: E) => void) {
 		event.preventDefault();
 		event.stopPropagation();
 		callback(event);
-	}
+	};
 }
