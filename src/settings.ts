@@ -80,7 +80,7 @@ export type Settings = {
 }
 
 export const defaultSettings: Settings = {
-	lastAcknowledgedVersion: '2.6.2',
+	lastAcknowledgedVersion: '2.6.3',
 
 	mediaListWidth: 640,
 	mediaListHeight: 0.5,
