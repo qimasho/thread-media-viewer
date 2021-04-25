@@ -16,6 +16,11 @@ export function Changelog() {
 	return h('div', {class: ns('Changelog')}, [
 		h('h1', null, 'Changelog'),
 
+		TITLE('2.6.3', '2021.04.25'),
+		h('ul', null, [
+			h('li', null, `Fix shortcut to open a thread in new background tab focusing the new tab in violentmonkey.`),
+		]),
+
 		TITLE('2.6.2', '2021.03.17'),
 		h('ul', null, [
 			h('li', null, `Fixed glitchy scrolling to the end of the page when navigating down from the last item.`),
