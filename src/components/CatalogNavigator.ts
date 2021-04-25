@@ -128,7 +128,10 @@ export function CatalogNavigator({settings, watcher}: RenderableProps<CatalogNav
 	useKey(enabled && settings.keyCatalogOpenThreadInNewTab, () => {
 		if (selectedThread) GM_openInTab(selectedThread.url, {active: true});
 	});
-	useKey(settings.keyCatalogOpenThreadInBackgroundTab, () => selectedThread && GM_openInTab(selectedThread.url));
+	useKey(
+		settings.keyCatalogOpenThreadInBackgroundTab,
+		() => selectedThread && GM_openInTab(selectedThread.url, {active: false})
+	);
 
 	// Mouse gestures
 	useGesture('up', toggleSettings);
