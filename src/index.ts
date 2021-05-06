@@ -32,6 +32,11 @@ if (serializer) {
 	const container = Object.assign(document.createElement('div'), {className: ns('CONTAINER')});
 	document.body.appendChild(container);
 
+	// Purpose: ensures the container is the last element in body
+	const remountContainer = () => {
+		document.body.appendChild(container);
+	};
+
 	const refreshMounts = throttle(() => {
 		/**
 		 * Un-mount components with detached targets
@@ -58,7 +63,10 @@ if (serializer) {
 				try {
 					// Throws when no container
 					mediaWatcher = new MediaWatcher(threadSerializer);
-					render(h(ThreadMediaViewer, {settings, watcher: mediaWatcher}), container);
+					render(
+						h(ThreadMediaViewer, {settings, watcher: mediaWatcher, onOpen: remountContainer}),
+						container
+					);
 				} catch (error) {}
 			}
 
