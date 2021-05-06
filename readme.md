@@ -1,6 +1,6 @@
 <div align="center">
-	<a href="https://www.webmshare.com/play/qdeW0"><img src="https://i.imgur.com/my5n3aK.gif"></a>
-	<a href="https://www.webmshare.com/play/qdeW0">click 🡹 for video preview</a>
+	<a href="https://i.imgur.com/mX21gSO.mp4"><img src="https://i.imgur.com/my5n3aK.gif"></a>
+	<a href="https://i.imgur.com/mX21gSO.mp4">click 🡹 for video preview</a>
 	<h1>Thread Media Viewer</h1>
 </div>
 
