@@ -16,9 +16,16 @@ export function Changelog() {
 	return h('div', {class: ns('Changelog')}, [
 		h('h1', null, 'Changelog'),
 
+		TITLE('2.6.4', '2021.05.06'),
+		h('ul', null, [h('li', null, `Fixed thread watcher box hovering above UI.`)]),
+
 		TITLE('2.6.3', '2021.04.25'),
 		h('ul', null, [
-			h('li', null, `Fix shortcut to open a thread in new background tab focusing the new tab in violentmonkey.`),
+			h(
+				'li',
+				null,
+				`Fixed shortcut to open a thread in new background tab focusing the new tab in violentmonkey.`
+			),
 		]),
 
 		TITLE('2.6.2', '2021.03.17'),
