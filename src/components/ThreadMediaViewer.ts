@@ -16,9 +16,10 @@ const {round} = Math;
 interface ThreadMediaViewerProps {
 	settings: SyncedSettings<Settings>;
 	watcher: MediaWatcher;
+	onOpen?: () => void;
 }
 
-export function ThreadMediaViewer({settings, watcher}: RenderableProps<ThreadMediaViewerProps>) {
+export function ThreadMediaViewer({settings, watcher, onOpen}: RenderableProps<ThreadMediaViewerProps>) {
 	const containerRef = useRef<HTMLElement>(null);
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [sideView, setSideView] = useState<string | null>(null);
@@ -92,10 +93,12 @@ export function ThreadMediaViewer({settings, watcher}: RenderableProps<ThreadMed
 	const closeMediaView = () => setActiveId(null);
 
 	function toggleList() {
-		setIsOpen((isOpen) => {
-			setSideView(null);
-			return !isOpen;
-		});
+		let newIsOpen = !isOpen;
+
+		setSideView(null);
+		setIsOpen(newIsOpen);
+
+		if (newIsOpen) onOpen?.();
 	}
 
 	function onOpenSideView(newView: string) {
