@@ -16,6 +16,15 @@ export function Changelog() {
 	return h('div', {class: ns('Changelog')}, [
 		h('h1', null, 'Changelog'),
 
+		TITLE('2.6.5', '2021.05.06'),
+		h('ul', null, [
+			h(
+				'li',
+				null,
+				`Fixed zooms and resizes not terminating because something on the sie is swallowing window mouseup events.`
+			),
+		]),
+
 		TITLE('2.6.4', '2021.05.06'),
 		h('ul', null, [h('li', null, `Fixed thread watcher box hovering above UI.`)]),
 
