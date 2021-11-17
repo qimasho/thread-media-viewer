@@ -100,11 +100,11 @@ export function MediaVideo({
 
 		function unbind() {
 			window.removeEventListener('mousemove', pointerTimelineSeek);
-			window.removeEventListener('mouseup', unbind);
+			document.body.removeEventListener('mouseup', unbind);
 		}
 
 		window.addEventListener('mousemove', pointerTimelineSeek);
-		window.addEventListener('mouseup', unbind);
+		document.body.addEventListener('mouseup', unbind);
 
 		pointerTimelineSeek(event);
 	}
@@ -308,13 +308,13 @@ function VideoTimeline({videoRef}: RenderableProps<VideoTimelineProps>) {
 
 			const unbind = () => {
 				window.removeEventListener('mousemove', pointerTimelineSeek);
-				window.removeEventListener('mouseup', unbind);
+				document.body.removeEventListener('mouseup', unbind);
 				pointerTimelineSeek.flush();
 				if (!wasPaused) video.play();
 			};
 
 			window.addEventListener('mousemove', pointerTimelineSeek);
-			window.addEventListener('mouseup', unbind);
+			document.body.addEventListener('mouseup', unbind);
 
 			pointerTimelineSeek(event);
 		};

@@ -97,7 +97,7 @@ export function MediaList({media, activeId, sideView, onActivation, onOpenSideVi
 		function handleMouseUp() {
 			// Rounded to increments of 10 to satisfy OCD demons
 			settings.mediaListWidth = round(settings.mediaListWidth / 10) * 10;
-			window.removeEventListener('mouseup', handleMouseUp);
+			document.body.removeEventListener('mouseup', handleMouseUp);
 			window.removeEventListener('mousemove', handleMouseMove);
 			document.documentElement.style.cursor = initialDocumentCursor;
 			setIsDragged(false);
@@ -106,7 +106,7 @@ export function MediaList({media, activeId, sideView, onActivation, onOpenSideVi
 		// Set temporary global cursor so it doesn't flash while moving
 		document.documentElement.style.cursor = `${direction}-resize`;
 		setIsDragged(true);
-		window.addEventListener('mouseup', handleMouseUp);
+		document.body.addEventListener('mouseup', handleMouseUp);
 		window.addEventListener('mousemove', handleMouseMove);
 	}
 

@@ -179,10 +179,10 @@ export const useGesture = (() => {
 
 		const gestureStart = {x, y};
 
-		window.addEventListener('mouseup', endGesture);
+		document.body.addEventListener('mouseup', endGesture);
 
 		function endGesture({button, x, y}: {button: number; x: number; y: number}) {
-			window.removeEventListener('mouseup', endGesture);
+			document.body.removeEventListener('mouseup', endGesture);
 
 			if (button !== 2) return;
 

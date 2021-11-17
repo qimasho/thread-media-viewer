@@ -27,6 +27,11 @@ const componentStyles = [
 	.map(({styles}) => styles)
 	.join('\n');
 const baseStyles = `
+/* Something is swallowing mouseup events on window, so we need to bind them to
+   body, and to ensure they are getting triggered, we need to make the body
+   full height of the window. */
+body {min-height: 100vh}
+
 .${ns('CONTAINER')},
 .${ns('CONTAINER')} *,
 .${ns('CONTAINER')} *:before,
