@@ -131,7 +131,7 @@ export function MediaImage({
 
 		const handleMouseUp = () => {
 			image.style.cssText = '';
-			document.body.removeEventListener('mouseup', handleMouseUp);
+			window.removeEventListener('mouseup', handleMouseUp);
 			window.removeEventListener('mousemove', handleMouseMove);
 			setZoomPan(false);
 		};
@@ -139,7 +139,7 @@ export function MediaImage({
 		panTo(zoomPan.initialX, zoomPan.initialY);
 
 		window.addEventListener('mousemove', handleMouseMove);
-		document.body.addEventListener('mouseup', handleMouseUp);
+		window.addEventListener('mouseup', handleMouseUp);
 	}, [zoomPan]);
 
 	function handleMouseDown(event: MouseEvent) {
