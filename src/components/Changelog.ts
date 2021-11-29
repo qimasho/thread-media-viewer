@@ -16,6 +16,18 @@ export function Changelog() {
 	return h('div', {class: ns('Changelog')}, [
 		h('h1', null, 'Changelog'),
 
+		TITLE('2.7.0', '2021.11.29'),
+		h('ul', null, [
+			h('li', null, [
+				`Implemented smart toggle vs peak zooming.`,
+				h('br', null),
+				`Applies to both full page mode (${settings.keyViewFullPage}), and zooming images with left mouse button.`,
+				h('br', null),
+				`If you want to quickly glance, just hold the button, and the zoom will be canceled upon release. If you want to toggle zoom until the next time the button is pressed, do a short press instead.`,
+			]),
+			h('li', null, `New option Hold time threshold, which controls the max length of a click to toggle zoom.`),
+		]),
+
 		TITLE('2.6.4', '2021.05.06'),
 		h('ul', null, [h('li', null, `Fixed thread watcher box hovering above UI.`)]),
 

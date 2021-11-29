@@ -80,7 +80,7 @@ export type Settings = {
 }
 
 export const defaultSettings: Settings = {
-	lastAcknowledgedVersion: '2.6.4',
+	lastAcknowledgedVersion: '2.7.0',
 
 	mediaListWidth: 640,
 	mediaListHeight: 0.5,
@@ -98,7 +98,6 @@ export const defaultSettings: Settings = {
 	endTimeFormat: 'total',
 
 	// Full page mode
-	holdTimeThreshold: 200,
 	fpmVideoUpscaleThreshold: 0.5,
 	fpmVideoUpscaleLimit: 2,
 	fpmImageUpscaleThreshold: 0,
@@ -106,6 +105,7 @@ export const defaultSettings: Settings = {
 
 	// Catalog navigator
 	catalogNavigator: true,
+	holdTimeThreshold: 200,
 
 	// Global navigation shortcuts (catalog & media list)
 	keyToggleUI: '`',
