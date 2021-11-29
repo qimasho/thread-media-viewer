@@ -1,6 +1,7 @@
 import {h, RenderableProps, useRef, useLayoutEffect, useState} from 'lib/preact';
 import {ns} from 'lib/utils';
 import {useElementSize} from 'lib/hooks';
+import {useSettings} from 'settings';
 import {ErrorBox} from 'components/ErrorBox';
 import {Spinner} from 'components/Spinner';
 
@@ -12,6 +13,8 @@ interface MediaImageProps {
 }
 
 interface ZoomPan {
+	initTime: number;
+
 	initialX: number;
 	initialY: number;
 }
@@ -24,6 +27,7 @@ export function MediaImage({
 	upscaleThreshold = 0,
 	upscaleLimit = 2,
 }: RenderableProps<MediaImageProps>) {
+	const settings = useSettings();
 	const containerRef = useRef<HTMLElement>(null);
 	const imageRef = useRef<HTMLImageElement>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -86,7 +90,14 @@ export function MediaImage({
 
 		if (!zoomPan || !image || !container) return;
 
-		const zoomMargin = 10;
+		let awaitingShortClick = true;
+		let isDraggingMode = false;
+		let lastDownTime = zoomPan.initTime;
+		let lastDownX = zoomPan.initialX;
+		let lastDownY = zoomPan.initialY;
+		let left = 0;
+		let top = 0;
+
 		const previewRect = image.getBoundingClientRect();
 		const zoomFactor = image.naturalWidth / previewRect.width;
 		const cursorAnchorX = previewRect.left + previewRect.width / 2;
@@ -98,8 +109,13 @@ export function MediaImage({
 		const dragWidth = max((previewRect.width - availableWidth / zoomFactor) / 2, 0);
 		const dragHeight = max((previewRect.height - availableHeight / zoomFactor) / 2, 0);
 
+		const zoomMargin = 10;
 		const translateWidth = max((image.naturalWidth - availableWidth) / 2, 0);
 		const translateHeight = max((image.naturalHeight - availableHeight) / 2, 0);
+		const minLeft = -translateWidth - zoomMargin;
+		const maxLeft = translateWidth + zoomMargin;
+		const minTop = -translateHeight - zoomMargin;
+		const maxTop = translateHeight + zoomMargin;
 
 		Object.assign(image.style, {
 			maxWidth: 'none',
@@ -111,41 +127,74 @@ export function MediaImage({
 			left: '50%',
 		});
 
-		const panTo = (x: number, y: number) => {
-			const dragFactorX = dragWidth > 0 ? -((x - cursorAnchorX) / dragWidth) : 0;
-			const dragFactorY = dragHeight > 0 ? -((y - cursorAnchorY) / dragHeight) : 0;
-			const left = round(
-				min(max(dragFactorX * translateWidth, -translateWidth - zoomMargin), translateWidth + zoomMargin)
-			);
-			const top = round(
-				min(max(dragFactorY * translateHeight, -translateHeight - zoomMargin), translateHeight + zoomMargin)
-			);
+		const applyPosition = (newLeft: number, newTop: number) => {
+			left = round(min(max(newLeft, minLeft), maxLeft));
+			top = round(min(max(newTop, minTop), maxTop));
 			image.style.transform = `translate(-50%, -50%) translate(${left}px, ${top}px)`;
 		};
 
 		const handleMouseMove = (event: MouseEvent) => {
 			event.preventDefault();
 			event.stopPropagation();
-			panTo(event.clientX, event.clientY);
+			if (isDraggingMode) {
+				moveBy(event.movementX, event.movementY);
+			} else {
+				panTo(event.x, event.y);
+			}
 		};
 
-		const handleMouseUp = () => {
-			image.style.cssText = '';
-			window.removeEventListener('mouseup', handleMouseUp);
+		const moveBy = (x: number, y: number) => applyPosition(left + x, top + y);
+
+		const panTo = (x: number, y: number) => {
+			const dragFactorX = dragWidth > 0 ? -((x - cursorAnchorX) / dragWidth) : 0;
+			const dragFactorY = dragHeight > 0 ? -((y - cursorAnchorY) / dragHeight) : 0;
+			applyPosition(dragFactorX * translateWidth, dragFactorY * translateHeight);
+		};
+
+		const handleMouseUp = (event: MouseEvent) => {
+			const pressDistance = Math.hypot(event.x - lastDownX, event.y - lastDownY);
+			const isShortClick = Date.now() - lastDownTime < settings.holdTimeThreshold && pressDistance < 20;
+
+			// Switch to dragging mode on short initial click
+			if (awaitingShortClick) {
+				if (isShortClick) isDraggingMode = true;
+				awaitingShortClick = false;
+			} else {
+				if (isShortClick) isDraggingMode = false;
+			}
+
+			// Terminate zoom
+			if (!isDraggingMode) {
+				image.style.cssText = '';
+				window.removeEventListener('mouseup', handleMouseUp);
+				window.removeEventListener('mousedown', handleMouseDown);
+				setZoomPan(false);
+			}
+
 			window.removeEventListener('mousemove', handleMouseMove);
-			setZoomPan(false);
+		};
+
+		const handleMouseDown = (event: MouseEvent) => {
+			if (event.button !== 0) return;
+			event.preventDefault();
+			event.stopPropagation();
+			lastDownTime = Date.now();
+			lastDownX = event.x;
+			lastDownY = event.y;
+			window.addEventListener('mousemove', handleMouseMove);
 		};
 
 		panTo(zoomPan.initialX, zoomPan.initialY);
 
-		window.addEventListener('mousemove', handleMouseMove);
 		window.addEventListener('mouseup', handleMouseUp);
+		window.addEventListener('mousemove', handleMouseMove);
+		window.addEventListener('mousedown', handleMouseDown);
 	}, [zoomPan]);
 
 	function handleMouseDown(event: MouseEvent) {
-		if (event.button !== 0) return;
+		if (event.button !== 0 || zoomPan) return;
 		event.preventDefault();
-		setZoomPan({initialX: event.clientX, initialY: event.clientY});
+		setZoomPan({initTime: Date.now(), initialX: event.clientX, initialY: event.clientY});
 	}
 
 	if (error) return h(ErrorBox, {error});

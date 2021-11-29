@@ -44,12 +44,22 @@ export function MediaView({media: {url, isVideo}, onClose}: RenderableProps<Medi
 	useKey(settings.keyViewFullPage, (event) => {
 		event.preventDefault();
 		if (event.repeat) return;
-		if (settings.fpmActivation === 'hold') {
-			setIsExpanded(true);
-			window.addEventListener('keyup', () => setIsExpanded(false), {once: true});
-		} else {
-			setIsExpanded((value) => !value);
+
+		if (isExpanded) {
+			setIsExpanded(false);
+			return;
 		}
+
+		const initTime = Date.now();
+		setIsExpanded(true);
+
+		window.addEventListener(
+			'keyup',
+			() => {
+				if (Date.now() - initTime > settings.holdTimeThreshold) setIsExpanded(false);
+			},
+			{once: true}
+		);
 	});
 
 	let classNames = ns('MediaView');

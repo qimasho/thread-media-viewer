@@ -122,20 +122,6 @@ const baseStyles = `
 .${ns('CONTAINER')} dt { font-weight: bold; }
 .${ns('CONTAINER')} dd { margin: .1em 0 .8em; color: #888; }
 .${ns('CONTAINER')} [title] { cursor: help; }
-.${ns('CONTAINER')} .${ns('help-indicator')} {
-	display: inline-block;
-	vertical-align: middle;
-	background: #333;
-	color: #aaa;
-	border-radius: 50%;
-	width: 1.3em;
-	height: 1.3em;
-	text-align: center;
-	font-size: .8em;
-	line-height: 1.3;
-}
-
-.${ns('CONTAINER')} .${ns('help-indicator')}::after { content: '?'; }
 .${ns('CONTAINER')} .${ns('-muted')} { opacity: .5; }
 `;
 

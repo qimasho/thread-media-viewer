@@ -184,33 +184,11 @@ export function Settings() {
 			h('legend', null, h('span', {class: ns('title')}, 'Full page mode')),
 
 			h('article', null, [
-				h('header', null, [
-					'Activation ',
+				h('section', null, [
+					'Activated with ',
 					h('small', {class: ns('-muted')}, [
 						'key: ',
 						h('kbd', {title: 'Rebind below.'}, `${settings.keyViewFullPage}`),
-					]),
-				]),
-				h('section', null, [
-					h('label', null, [
-						h('input', {
-							type: 'radio',
-							name: 'fpmActivation',
-							value: 'hold',
-							checked: settings.fpmActivation === 'hold',
-							onInput: () => (settings.fpmActivation = 'hold'),
-						}),
-						' hold',
-					]),
-					h('label', null, [
-						h('input', {
-							type: 'radio',
-							name: 'fpmActivation',
-							value: 'toggle',
-							checked: settings.fpmActivation === 'toggle',
-							onInput: () => (settings.fpmActivation = 'toggle'),
-						}),
-						' toggle',
 					]),
 				]),
 			]),
@@ -225,7 +203,7 @@ export function Settings() {
 Set to 100% to always upscale if video is smaller than available area.
 Set to 0% to never upscale.`,
 					},
-					[h('span', {class: ns('help-indicator')}), ' Video upscale threshold']
+					'Video upscale threshold'
 				),
 				h('section', null, [
 					h('input', {
@@ -254,7 +232,7 @@ Set to 0% to never upscale.`,
 					{
 						title: `Don't upscale videos more than ${settings.fpmVideoUpscaleLimit}x of their original size.`,
 					},
-					[h('span', {class: ns('help-indicator')}), ' Video upscale limit']
+					'Video upscale limit'
 				),
 				h('section', null, [
 					h('input', {
@@ -282,7 +260,7 @@ Set to 0% to never upscale.`,
 Set to 100% to always upscale if image is smaller than available area.
 Set to 0% to never upscale.`,
 					},
-					[h('span', {class: ns('help-indicator')}), ' Image upscale threshold']
+					'Image upscale threshold'
 				),
 				h('section', null, [
 					h('input', {
@@ -311,7 +289,7 @@ Set to 0% to never upscale.`,
 					{
 						title: `Don't upscale images more than ${settings.fpmImageUpscaleLimit}x of their original size.`,
 					},
-					[h('span', {class: ns('help-indicator')}), ' Image upscale limit']
+					'Image upscale limit'
 				),
 				h('section', null, [
 					h('input', {
@@ -413,7 +391,7 @@ Set to 0% to never upscale.`,
 						onInput: withValue((value) => (settings.tinySeekBy = parseFloat(value) || 0.03)),
 					}),
 					' ',
-					h('code', null, `${round(settings.tinySeekBy * 1000)} ms`),
+					h('code', null, `${round(settings.tinySeekBy * 1000)}ms`),
 				]),
 			]),
 
@@ -495,10 +473,10 @@ Set to 0% to never upscale.`,
 		]),
 
 		h('fieldset', null, [
-			h('legend', null, h('span', {class: ns('title')}, 'Catalog navigator')),
+			h('legend', null, h('span', {class: ns('title')}, 'Other')),
 
 			h('article', null, [
-				h('header', null, 'Enabled'),
+				h('header', {title: `Enables keyboard navigation in catalog`}, 'Catalog navigator'),
 				h('section', null, [
 					h('input', {
 						type: 'checkbox',
@@ -507,6 +485,29 @@ Set to 0% to never upscale.`,
 						checked: settings.catalogNavigator,
 						onInput: (event: InputEvent) => (settings.catalogNavigator = (event.target as any)?.checked),
 					}),
+				]),
+			]),
+
+			h('article', null, [
+				h(
+					'header',
+					{
+						title: `Some keys lead to different actions when pressed rather than held down (full page toggle, click/hold to zoom, ...).\nThis value is the max time for the key press to still be recognized as a click.`,
+					},
+					'Hold time threshold'
+				),
+				h('section', null, [
+					h('input', {
+						type: 'range',
+						min: 40,
+						max: 500,
+						step: 20,
+						name: 'holdTimeThreshold',
+						value: settings.holdTimeThreshold,
+						onInput: withValue((value) => (settings.holdTimeThreshold = parseInt(value, 10) || 0.025)),
+					}),
+					' ',
+					h('code', null, `${settings.holdTimeThreshold}ms`),
 				]),
 			]),
 		]),
@@ -592,6 +593,20 @@ Settings.styles = `
 	color: #fff;
 	border-color: #f44;
 	background: #f44;
+}
+.${ns('CONTAINER')} article > header[title]::before {
+	content: '?';
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: .4em;
+	background: #333;
+	color: #aaa;
+	border-radius: 50%;
+	width: 1.3em;
+	height: 1.3em;
+	text-align: center;
+	font-size: .8em;
+	line-height: 1.3;
 }
 .${ns('Settings')} article button.${ns('reset')},
 .${ns('Settings')} article button.${ns('unbind')} { margin-left: 0.3em; }

@@ -20,14 +20,14 @@ export type Settings = {
 	endTimeFormat: 'total' | 'remaining',
 
 	// Full page mode
-	fpmActivation: 'hold' | 'toggle',
 	fpmVideoUpscaleThreshold: number,
 	fpmVideoUpscaleLimit: number,
 	fpmImageUpscaleThreshold: number,
 	fpmImageUpscaleLimit: number,
 
-	// Catalog navigator
+	// Other
 	catalogNavigator: boolean,
+	holdTimeThreshold: number,
 
 	// Global navigation shortcuts (catalog & media list)
 	keyToggleUI: string | null,
@@ -98,7 +98,7 @@ export const defaultSettings: Settings = {
 	endTimeFormat: 'total',
 
 	// Full page mode
-	fpmActivation: 'hold',
+	holdTimeThreshold: 200,
 	fpmVideoUpscaleThreshold: 0.5,
 	fpmVideoUpscaleLimit: 2,
 	fpmImageUpscaleThreshold: 0,
