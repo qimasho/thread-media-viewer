@@ -1,4 +1,3 @@
-import {isOfType} from 'lib/utils';
 import {ThreadSerializer, SerializedMedia} from 'serializers';
 
 export interface Media extends SerializedMedia {
@@ -30,7 +29,7 @@ export class MediaWatcher {
 		// Initialize observer
 		this.serialize();
 		this.observer = new MutationObserver(this.serialize);
-		this.observer.observe(container, {childList: true, subtree: true});
+		this.observer.observe(container, {childList: true, subtree: true, attributeFilter: ['href', 'src']});
 	}
 
 	destroy = () => {
