@@ -44,14 +44,15 @@ export function MediaView({media: {url, isVideo}, onClose}: RenderableProps<Medi
 			? h(MediaVideo, {
 					key: url,
 					url,
-					upscale: isExpanded,
+					expand: isExpanded,
 					upscaleThreshold: settings.fpmVideoUpscaleThreshold,
 					upscaleLimit: settings.fpmVideoUpscaleLimit,
 			  })
 			: h(MediaImage, {
 					key: url,
 					url,
-					upscale: isExpanded,
+					expand: isExpanded,
+					onExpandChange: setIsExpanded,
 					upscaleThreshold: settings.fpmImageUpscaleThreshold,
 					upscaleLimit: settings.fpmImageUpscaleLimit,
 			  }),

@@ -7,7 +7,7 @@ import {Spinner} from 'components/Spinner';
 
 interface MediaVideoProps {
 	url: string;
-	upscale?: boolean;
+	expand?: boolean;
 	upscaleThreshold?: number;
 	upscaleLimit?: number;
 }
@@ -16,7 +16,7 @@ const {min, max, round} = Math;
 
 export function MediaVideo({
 	url,
-	upscale = false,
+	expand = false,
 	upscaleThreshold = 0.5,
 	upscaleLimit = 2,
 }: RenderableProps<MediaVideoProps>) {
@@ -62,7 +62,7 @@ export function MediaVideo({
 		const container = containerRef.current;
 		const video = videoRef.current;
 
-		if (!upscale || isLoading || !video || !container || !containerWidth || !containerHeight) return;
+		if (!expand || isLoading || !video || !container || !containerWidth || !containerHeight) return;
 
 		const naturalWidth = video.videoWidth;
 		const naturalHeight = video.videoHeight;
@@ -84,7 +84,7 @@ export function MediaVideo({
 		return () => {
 			video.style.cssText = '';
 		};
-	}, [isLoading, url, upscale, upscaleThreshold, upscaleLimit, containerWidth, containerHeight]);
+	}, [isLoading, url, expand, upscaleThreshold, upscaleLimit, containerWidth, containerHeight]);
 
 	function initializeVolumeDragging(event: MouseEvent) {
 		const volume = volumeRef.current;
