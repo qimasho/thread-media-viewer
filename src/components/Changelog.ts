@@ -16,6 +16,13 @@ export function Changelog() {
 	return h('div', {class: ns('Changelog')}, [
 		h('h1', null, 'Changelog'),
 
+		TITLE('2.8.0', '2022.10.14'),
+		h('ul', null, [
+			h('li', null, `Clicking image now toggles full page mode. Dragging in full page mode zooms & pans.`),
+			h('li', null, `Removed fullscreen shortcut and double click to fullscreen. You can fullscreen with F11, and double click was just annoying.`),
+			h('li', null, `Fixed clicking on thread thumbnails sometimes not being intercepted.`),
+		]),
+
 		TITLE('2.7.0', '2021.11.29'),
 		h('ul', null, [
 			h('li', null, [
