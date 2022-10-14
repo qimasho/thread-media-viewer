@@ -535,7 +535,6 @@ Set to 0% to never upscale.`,
 		shortcutsFieldset('Media view shortcuts', [
 			['keyViewClose', 'Close view'],
 			['keyViewFullPage', 'Full page mode'],
-			['keyViewFullScreen', 'Full screen mode'],
 			['keyViewPause', 'Pause'],
 			['keyViewFastForward', 'Fast forward'],
 			['keyViewVolumeDown', 'Volume down'],

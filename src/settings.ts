@@ -50,7 +50,6 @@ export type Settings = {
 	// Media view shortcuts
 	keyViewClose: string | null,
 	keyViewFullPage: string | null,
-	keyViewFullScreen: string | null,
 	keyViewPause: string | null,
 	keyViewFastForward: string | null,
 	keyViewVolumeDown: string | null,
@@ -128,7 +127,6 @@ export const defaultSettings: Settings = {
 	// Media view shortcuts
 	keyViewClose: 'F',
 	keyViewFullPage: 'Tab',
-	keyViewFullScreen: 'r',
 	keyViewPause: 'Space',
 	keyViewFastForward: 'Shift+Space',
 	keyViewVolumeDown: 'Q',

@@ -15,32 +15,8 @@ export function MediaView({media: {url, isVideo}, onClose}: RenderableProps<Medi
 	const settings = useSettings();
 	const containerRef = useRef<HTMLElement>(null);
 	const [isExpanded, setIsExpanded] = useState<boolean>(false);
-	const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
-
-	function toggleFullscreen() {
-		if (containerRef.current) {
-			if (!document.fullscreenElement) {
-				setIsFullScreen(true);
-				containerRef.current.requestFullscreen().catch((error) => {
-					setIsFullScreen(false);
-				});
-			} else {
-				setIsFullScreen(false);
-				document.exitFullscreen();
-			}
-		}
-	}
-
-	function handleDblClick(event: MouseEvent) {
-		// Filter out clicks on buttons
-		const target = event.target;
-		if (!isOfType<HTMLElement>(target, target != null && 'closest' in target)) return;
-		if (target.closest('button') != null) return;
-		toggleFullscreen();
-	}
 
 	useKey(settings.keyViewClose, onClose);
-	useKey(settings.keyViewFullScreen, toggleFullscreen);
 	useKey(settings.keyViewFullPage, (event) => {
 		event.preventDefault();
 		if (event.repeat) return;
@@ -55,29 +31,27 @@ export function MediaView({media: {url, isVideo}, onClose}: RenderableProps<Medi
 
 		window.addEventListener(
 			'keyup',
-			() => {
-				if (Date.now() - initTime > settings.holdTimeThreshold) setIsExpanded(false);
-			},
+			() => Date.now() - initTime > settings.holdTimeThreshold && setIsExpanded(false),
 			{once: true}
 		);
 	});
 
 	let classNames = ns('MediaView');
-	if (isExpanded || isFullScreen) classNames += ` ${ns('-expanded')}`;
+	if (isExpanded) classNames += ` ${ns('-expanded')}`;
 
-	return h('div', {class: classNames, ref: containerRef, onDblClick: handleDblClick}, [
+	return h('div', {class: classNames, ref: containerRef}, [
 		isVideo
 			? h(MediaVideo, {
 					key: url,
 					url,
-					upscale: isExpanded || isFullScreen,
+					upscale: isExpanded,
 					upscaleThreshold: settings.fpmVideoUpscaleThreshold,
 					upscaleLimit: settings.fpmVideoUpscaleLimit,
 			  })
 			: h(MediaImage, {
 					key: url,
 					url,
-					upscale: isExpanded || isFullScreen,
+					upscale: isExpanded,
 					upscaleThreshold: settings.fpmImageUpscaleThreshold,
 					upscaleLimit: settings.fpmImageUpscaleLimit,
 			  }),
