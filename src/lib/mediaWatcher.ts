@@ -53,7 +53,7 @@ export class MediaWatcher {
 				const mediaItem: Media = {
 					...serializedMedia,
 					extension,
-					isVideo: !!extension.match(/webm|mp4/),
+					isVideo: !!extension.match(/webm?|mp4/),
 					isGif: extension === 'gif',
 					postContainer,
 					replies: serializedPost.replies,
