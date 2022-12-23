@@ -16,6 +16,11 @@ export function Changelog() {
 	return h('div', {class: ns('Changelog')}, [
 		h('h1', null, 'Changelog'),
 
+		TITLE('2.8.1', '2022.12.23'),
+		h('ul', null, [
+			h('li', null, `Fixed serializer recognizing some videos as images.`),
+		]),
+
 		TITLE('2.8.0', '2022.10.14'),
 		h('ul', null, [
 			h('li', null, `Clicking image now toggles full page mode. Dragging in full page mode zooms & pans.`),
